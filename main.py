@@ -5,6 +5,7 @@ import json
 from os import error, system
 import time
 import serial
+import serial.tools.list_ports
 import struct
 import sys
 # sys.setdefaultencoding('utf-8')
@@ -23,11 +24,12 @@ hvac_cfg_file_name      = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name      = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
 conf_com                = serial.Serial ()
 data_com                = serial.Serial ()
-#conf_com.port           = 'COM10' # Choose: Silicon Labs Dual CP2105 USB to UART Bridge: Enhanced COM Port from Device manager on MS GO3
-conf_com.port           = 'COM4'
-#data_com.port           = 'COM11' # Choose: Silicon Labs Dual CP2105 USB to UART Bridge: Standard COM Port from Device manager on MS GO3
-data_com.port           = 'COM3'
-# Chose from Device manager: Silicon Labs Dual CP2105 USB to UART Bridge: Standard COM Port 
+serial_ports =  serial.tools.list_ports.comports()
+for s_p in serial_ports:
+    if "Silicon Labs Dual CP2105 USB to UART Bridge: Enhanced COM Port" in s_p.description:
+        conf_com.port = s_p.name
+    if "Silicon Labs Dual CP2105 USB to UART Bridge: Standard COM Port" in s_p.description:
+        data_com.port = s_p.name
 conf_com.baudrate       = 115200
 data_com.baudrate       = 921600*1
 conf_com.bytesize       = serial.EIGHTBITS
@@ -266,7 +268,7 @@ print ( hello )
 # Configure chirp 
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-#chirp_conf ()
+chirp_conf ()
 
 # Read data
 data_com.reset_output_buffer()
