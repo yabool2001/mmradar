@@ -26,9 +26,9 @@ conf_com                = serial.Serial ()
 data_com                = serial.Serial ()
 serial_ports =  serial.tools.list_ports.comports()
 for s_p in serial_ports:
-    if "Silicon Labs Dual CP2105 USB to UART Bridge: Enhanced COM Port" in s_p.description:
+    if 'CP2105'.lower() in s_p.description.lower() and 'Enhanced' in s_p.description.lower():
         conf_com.port = s_p.name
-    if "Silicon Labs Dual CP2105 USB to UART Bridge: Standard COM Port" in s_p.description:
+    if 'CP2105'.lower() in s_p.description.lower() and 'Standard' in s_p.description.lower():
         data_com.port = s_p.name
 conf_com.baudrate       = 115200
 data_com.baudrate       = 921600*1
@@ -71,13 +71,23 @@ except IOError as e :
     print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file opening problem... {str(e)}' )
 
 # Open Chirp configuration file and read configuration to chirp_cfg
-match people_counting_mode:
-    case 'pc3d':
-        conf_file_name = pc3d_cfg_file_name
-    case 'hvac':
-        conf_file_name = hvac_cfg_file_name
-    case _:
-        print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
+
+# Jak będę miał na raspberry pi python wersja 3.10 to zastąpić to
+#match people_counting_mode:
+#    case 'pc3d':
+#        conf_file_name = pc3d_cfg_file_name
+#    case 'hvac':
+#        conf_file_name = hvac_cfg_file_name
+#    case _:
+#        print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
+# na to 
+if people_counting_mode == 'pc3d':
+    conf_file_name = pc3d_cfg_file_name
+elif people_counting_mode == 'hvac':
+    conf_file_name = hvac_cfg_file_name
+else:
+    print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
+# do tąd
 try:
     with open ( f'{conf_file_name}' , 'r' , encoding='utf-8' ) as conf_file:
         if conf_file.readable () :
