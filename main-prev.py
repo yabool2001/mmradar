@@ -1,12 +1,9 @@
-# Wdrożyć checksum bo nie wiem skąd się biorą błędy w ramkach tlv
-
 #import azure_iot_hub_mzemlopl as aih
 from contextlib import nullcontext
 import datetime
 import json
 from os import error, system
 import platform
-from pprint import pprint
 import time
 import serial
 import serial.tools.list_ports
@@ -164,28 +161,31 @@ class PC3D :
         self.tlv_header_length = struct.calcsize ( self.tlv_header_struct )
         self.tlv_header_dict = dict ()
         self.tlv_header_json = None
-        self.tlv_list = []
-        self.tlvs_json = None
         self.pointcloud_unit_struct = '4f'
         self.pointcloud_unit_length = struct.calcsize ( self.pointcloud_unit_struct )
         self.point_struct = '2B2h'
         self.point_length = struct.calcsize ( self.point_struct )
-        self.point_list = []
-        self.points_json = None
-        self.pointcloud_unit_dict = dict ()
-        self.pointcloud_unit_json = None
         self.target_list_struct = 'I27f'
         self.target_list_length = struct.calcsize ( self.target_list_struct )
         self.presence_indication_struct = '1I'
         self.presence_indication_length = struct.calcsize ( self.presence_indication_struct )
         self.presence_indication_value = None
         self.presence_indication_json = None
+        self.tlvs = None
+        self.pointcloud_unit = None
+        self.azimuth_unit = None
+        self.doppler_unit = None
+        self.range_unit = None
+        self.snr_unit = None
+        self.points = None
+        self.tlv_list = []
+        self.point_list = []
 
     def write_data ( self , file ) :
-        file.write ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}" )
+        file.write ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs}}}" )
         # Azure part
         #try :
-        #    azure_client.send_message ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}" )
+        #    azure_client.send_message ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs}}}" )
         #except :
         #    print ( "Azure error connecting or sending message")
 
@@ -203,26 +203,26 @@ class PC3D :
             except struct.error as e :
                 self.point_list.append ( f"{{'error':'{e}'}}" )
         l = len ( self.point_list )
-        self.points_json = f"'num_points':{points_number},'points':["
+        self.points = f"'num_points':{points_number},'points':["
         for i in range ( len ( self.point_list ) ) :
-            self.points_json += str ( self.point_list[i] ) #self.points_json = self.points_json + str ( self.point_list[i] )
+            self.points += str ( self.point_list[i] ) #self.points = self.points + str ( self.point_list[i] )
             if i < ( l - 1 ) :
-                self.points_json = self.points_json + ","
-        self.points_json = self.points_json + "]"
+                self.points = self.points + ","
+        self.points = self.points + "]"
         self.point_list.clear ()
 
+
+    # Zdekodowanie chmury punktów z ramki zaczynającej się od chmury punktów
+    # Zapisanie chmury punktów do dict, zapisanie słownika do pliku i skasowanie słownika
+    # Usunięcie chmury punktów z ramki
     def get_pointcloud2d_unit ( self ) :
         try :
-            azimuth_unit , doppler_unit , range_unit , snr_unit = struct.unpack ( self.pointcloud_unit_struct , self.raw_data[self.tlv_header_length:][:self.pointcloud_unit_length] )
-            self.pointcloud_unit_dict = { 'azimuth_unit' : azimuth_unit , 'doppler_unit' : doppler_unit , 'range_unit' : range_unit , 'snr_unit' : snr_unit }
-        except struct.error as e :
-            self.pointcloud_unit_dict = { 'error' : {e} }
-        self.pointcloud_unit_json = f"'point_cloud_unit':{self.pointcloud_unit_dict}"
-        if self.pointcloud_unit_dict.get ( 'error' ) :
-            return False
-        else:
+            self.azimuth_unit , self.doppler_unit , self.range_unit , self.snr_unit = struct.unpack ( self.pointcloud_unit_struct , self.raw_data[self.tlv_header_length:][:self.pointcloud_unit_length] )
+            self.pointcloud_unit = f"'point_cloud_unit':{{'azimuth_unit':{self.azimuth_unit},'doppler_unit':{self.doppler_unit},'range_unit':{self.range_unit},'snr_unit':{self.snr_unit}}}"
             return True
-
+        except struct.error as e :
+            self.pointcloud_unit = f"{{'point_cloud_unit':{{'error':'{e}'}}}}"
+            return False
 
     def get_presence_indication ( self ) :
         try :
@@ -242,22 +242,22 @@ class PC3D :
             tlv_type, tlv_length = struct.unpack ( self.tlv_header_struct , self.raw_data[:self.tlv_header_length] )
             self.tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
         except struct.error as e :
-            self.tlv_header_dict = { 'error' : {e} }
-            log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}" )
+            self.tlv_header_dict = { 'error': {e} }
+            log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}." )
         self.tlv_header_json = f"'tlv_header':{self.tlv_header_dict}"
-        if self.tlv_header_dict.get ( 'error' ) :
-            return False
-        else:
+        if self.tlv_header_dict.get ( 'tlv_type' ) and self.tlv_header_dict.get ( 'tlv_length' ) :
             return True
+        else:
+            return False
 
     def get_tlv ( self ) :
-        if self.get_tlv_header () :
+        if self.get_tlv_header  () :
             if self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_pointcloud_2d :
-                    if self.get_pointcloud2d_unit () : 
+                    if self.get_pointcloud2d_unit () : # tutaj coś jest nie tak 
                         self.get_points ( self.tlv_header_dict['tlv_length'] )
-                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit_json},{self.points_json}}}}}" )
-                    else : # tutaj coś jest nie tak, bo jesli jest False to czemu wstawiam to unit? jeśli chodzi o point to trzeba to poprawić
-                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit_json}}}}}" )
+                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit},{self.points}}}}}" )
+                    else :
+                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit}}}}}" )
             elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_list or self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_index :
                 self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
             elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_presence_indication :
@@ -273,16 +273,16 @@ class PC3D :
     def get_tlvs ( self ) :
         for i in range ( self.frame_header_dict.get ( 'num_tlvs' ) ) : # get jest bezpieczne, bo w tym miejscu nie jest jeszcze pewny czy self.frame_header_dict['num_tlvs'] istnieje i mogłoby powodować błąd w programie
             if not self.get_tlv () :
-                log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}" )
-                print ( f"Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}" )
+                log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}." )
+                print ( f"Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}." )
                 break
         l = len ( self.tlv_list )
-        self.tlvs_json = "'tlvs':["
+        self.tlvs = "'tlvs':["
         for i in range ( l ) :
-            self.tlvs_json = self.tlvs_json + str ( self.tlv_list[i] )
+            self.tlvs = self.tlvs + str ( self.tlv_list[i] )
             if i < ( l - 1 ) :
-                self.tlvs_json = self.tlvs_json + ","
-        self.tlvs_json = self.tlvs_json + "]"
+                self.tlvs = self.tlvs + ","
+        self.tlvs = self.tlvs + "]"
         self.tlv_list.clear ()
             
     # Rozpakuj i zapisz dane z Frame header
@@ -291,15 +291,11 @@ class PC3D :
             sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( self.frame_header_struct , self.raw_data[:self.frame_header_length] )
             if sync == self.control :
                 self.frame_header_dict = { 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'frame_number' : frame_number , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'num_tlvs' : num_tlvs , 'checksum' : checksum }
+                self.frame_header_json = f"{{'frame_header':{self.frame_header_dict}}}"
             else :
-                self.frame_header_dict = { 'error' : 'control != {sync}' }
+                self.frame_header_json = f"{{'frame_header':{{'error':'control = {sync}'}}}}"
         except struct.error as e :
-            self.frame_header_dict = { 'error' : {e} }
-        self.frame_header_json = f"{{'frame_header':{self.frame_header_dict}}}"
-        if self.frame_header_dict.get ( 'error' ) :
-            return False
-        else:
-            return True
+            self.frame_header_json = f"{{'frame_header':{{'error':'{e}'}}}}"
 
 ################################################################
 ####################### START PROGRAM ##########################
@@ -319,7 +315,8 @@ frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds 
 while datetime.datetime.utcnow () < frame_read_time_up :
     raw_data = data_com.read ( 4666 )
     pc3d_object = PC3D ( raw_data )
-    if pc3d_object.get_frame_header () :
+    pc3d_object.get_frame_header ()
+    if pc3d_object.frame_header_dict.get ( 'num_tlvs' ) :
         pc3d_object.raw_data = pc3d_object.raw_data[pc3d_object.frame_header_length:]
         pc3d_object.get_tlvs ()
     pc3d_object.write_data ( data_file )

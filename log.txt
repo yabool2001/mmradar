@@ -1152,3 +1152,545 @@
 20:31:54 COM4 port closed.
 20:31:54 data.txt file is closed.
 20:31:54 log.txt file closing...
+20:51:17 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+20:51:17 log.txt file is writable.
+20:51:17 data.txt file is writable.
+20:51:17 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+20:51:17 COM4 port opened.
+20:51:17 COM3 port opened
+20:51:17 Break 1 in function: get_tlvs with frame number: 576414.
+20:51:17 Break 1 in function: get_tlvs with frame number: 576415.
+20:51:17 Break 1 in function: get_tlvs with frame number: 576416.
+20:51:17 Break 1 in function: get_tlvs with frame number: 576417.
+20:51:17 Break 1 in function: get_tlvs with frame number: 576418.
+20:51:17 Break 1 in function: get_tlvs with frame number: 576419.
+20:51:17 Break 1 in function: get_tlvs with frame number: 576420.
+20:51:18 Break 1 in function: get_tlvs with frame number: 576421.
+20:51:18 Break 1 in function: get_tlvs with frame number: 576422.
+20:51:18 Break 1 in function: get_tlvs with frame number: 576423.
+20:51:18 Break 1 in function: get_tlvs with frame number: 576424.
+20:51:18 Break 1 in function: get_tlvs with frame number: 576425.
+20:51:18 Error 1 in function: get_tlv_header with frame number: 576426.
+20:51:28 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+20:51:28 log.txt file is writable.
+20:51:28 data.txt file is writable.
+20:51:28 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+20:51:28 COM4 port opened.
+20:51:28 COM3 port opened
+20:51:30 COM3 port closed.
+20:51:30 COM4 port closed.
+20:51:30 data.txt file is closed.
+20:51:30 log.txt file closing...
+20:51:33 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+20:51:33 log.txt file is writable.
+20:51:33 data.txt file is writable.
+20:51:33 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+20:51:33 COM4 port opened.
+20:51:33 COM3 port opened
+20:51:34 Error 1 in function: get_tlv_header with frame number: 576724.
+20:51:34 Break 1 in function: get_tlvs with frame number: 576724.
+20:51:35 COM3 port closed.
+20:51:35 COM4 port closed.
+20:51:35 data.txt file is closed.
+20:51:35 log.txt file closing...
+20:51:37 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+20:51:37 log.txt file is writable.
+20:51:37 data.txt file is writable.
+20:51:37 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+20:51:37 COM4 port opened.
+20:51:37 COM3 port opened
+20:51:39 Error 1 in function: get_tlv_header with frame number: 576810.
+20:51:39 Break 1 in function: get_tlvs with frame number: 576810.
+20:51:39 COM3 port closed.
+20:51:39 COM4 port closed.
+20:51:39 data.txt file is closed.
+20:51:39 log.txt file closing...
+20:52:58 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+20:52:58 log.txt file is writable.
+20:52:58 data.txt file is writable.
+20:52:58 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+20:52:58 COM4 port opened.
+20:52:58 COM3 port opened
+20:52:58 Error 1 in function: get_tlv_header with frame number: 578253.
+20:52:58 Break 1 in function: get_tlvs with frame number: 578253.
+20:52:59 Error 1 in function: get_tlv_header with frame number: 578261.
+20:52:59 Break 1 in function: get_tlvs with frame number: 578261.
+20:52:59 Error 1 in function: get_tlv_header with frame number: 578270.
+20:52:59 Break 1 in function: get_tlvs with frame number: 578270.
+20:53:0 COM3 port closed.
+20:53:0 COM4 port closed.
+20:53:0 data.txt file is closed.
+20:53:0 log.txt file closing...
+21:15:14 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:15:14 log.txt file is writable.
+21:15:14 data.txt file is writable.
+21:15:14 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:15:14 COM4 port opened.
+21:15:14 COM3 port opened
+21:15:15 Error 1 in function: get_tlv_header with frame number: 602548
+21:15:15 Break 1 in function: get_tlvs with frame number: 602548
+21:15:16 COM3 port closed.
+21:15:16 COM4 port closed.
+21:15:16 data.txt file is closed.
+21:15:16 log.txt file closing...
+21:15:25 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:15:25 log.txt file is writable.
+21:15:25 data.txt file is writable.
+21:15:25 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:15:25 COM4 port opened.
+21:15:25 COM3 port opened
+21:15:34 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:15:34 log.txt file is writable.
+21:15:34 data.txt file is writable.
+21:15:34 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:15:34 COM4 port opened.
+21:15:34 COM3 port opened
+21:15:35 Error 1 in function: get_tlv_header with frame number: 602929
+21:15:35 Break 1 in function: get_tlvs with frame number: 602929
+21:15:36 COM3 port closed.
+21:15:36 COM4 port closed.
+21:15:36 data.txt file is closed.
+21:15:36 log.txt file closing...
+21:15:38 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:15:38 log.txt file is writable.
+21:15:38 data.txt file is writable.
+21:15:38 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:15:38 COM4 port opened.
+21:15:38 COM3 port opened
+21:20:2 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:20:2 log.txt file is writable.
+21:20:2 data.txt file is writable.
+21:20:2 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:20:2 COM4 port opened.
+21:20:2 COM3 port opened
+21:20:3 Error 1 in function: get_tlv_header with frame number: 607784
+21:20:3 Break 1 in function: get_tlvs with frame number: 607784
+21:20:4 COM3 port closed.
+21:20:4 COM4 port closed.
+21:20:4 data.txt file is closed.
+21:20:4 log.txt file closing...
+21:20:7 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:20:7 log.txt file is writable.
+21:20:7 data.txt file is writable.
+21:20:7 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:20:7 COM4 port opened.
+21:20:7 COM3 port opened
+21:20:8 Error 1 in function: get_tlv_header with frame number: 607877
+21:20:8 Break 1 in function: get_tlvs with frame number: 607877
+21:20:8 Error 1 in function: get_tlv_header with frame number: 607881
+21:20:8 Break 1 in function: get_tlvs with frame number: 607881
+21:20:10 COM3 port closed.
+21:20:10 COM4 port closed.
+21:20:10 data.txt file is closed.
+21:20:10 log.txt file closing...
+21:21:1 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:21:1 log.txt file is writable.
+21:21:1 data.txt file is writable.
+21:21:1 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:21:1 COM4 port opened.
+21:21:1 COM3 port opened
+21:21:3 COM3 port closed.
+21:21:3 COM4 port closed.
+21:21:3 data.txt file is closed.
+21:21:3 log.txt file closing...
+21:28:6 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:28:6 log.txt file is writable.
+21:28:6 data.txt file is writable.
+21:28:6 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:28:6 COM4 port opened.
+21:28:6 COM3 port opened
+21:28:7 Error 1 in function: get_tlv_header with frame number: 616590
+21:28:7 Break 1 in function: get_tlvs with frame number: 616590
+21:28:7 Error 1 in function: get_tlv_header with frame number: 616594
+21:28:7 Break 1 in function: get_tlvs with frame number: 616594
+21:28:8 COM3 port closed.
+21:28:8 COM4 port closed.
+21:28:8 data.txt file is closed.
+21:28:8 log.txt file closing...
+21:28:11 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:28:11 log.txt file is writable.
+21:28:11 data.txt file is writable.
+21:28:11 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:28:11 COM4 port opened.
+21:28:11 COM3 port opened
+21:28:11 Error 1 in function: get_tlv_header with frame number: 616664
+21:28:11 Break 1 in function: get_tlvs with frame number: 616664
+21:28:11 Error 1 in function: get_tlv_header with frame number: 616668
+21:28:11 Break 1 in function: get_tlvs with frame number: 616668
+21:28:13 Error 1 in function: get_tlv_header with frame number: 616693
+21:28:13 Break 1 in function: get_tlvs with frame number: 616693
+21:28:13 COM3 port closed.
+21:28:13 COM4 port closed.
+21:28:13 data.txt file is closed.
+21:28:13 log.txt file closing...
+21:28:55 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:28:55 log.txt file is writable.
+21:28:55 data.txt file is writable.
+21:28:55 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:28:55 COM4 port opened.
+21:28:55 COM3 port opened
+21:28:56 Error 1 in function: get_tlv_header with frame number: 617476
+21:28:56 Break 1 in function: get_tlvs with frame number: 617476
+21:28:56 Error 1 in function: get_tlv_header with frame number: 617484
+21:28:56 Break 1 in function: get_tlvs with frame number: 617484
+21:28:57 Error 1 in function: get_tlv_header with frame number: 617493
+21:28:57 Break 1 in function: get_tlvs with frame number: 617493
+21:28:57 Error 1 in function: get_tlv_header with frame number: 617506
+21:28:57 Break 1 in function: get_tlvs with frame number: 617506
+21:28:57 COM3 port closed.
+21:28:57 COM4 port closed.
+21:28:57 data.txt file is closed.
+21:28:57 log.txt file closing...
+21:29:2 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:2 log.txt file is writable.
+21:29:2 data.txt file is writable.
+21:29:2 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:2 COM4 port opened.
+21:29:2 COM3 port opened
+21:29:2 Error 1 in function: get_tlv_header with frame number: 617601
+21:29:2 Break 1 in function: get_tlvs with frame number: 617601
+21:29:3 Error 1 in function: get_tlv_header with frame number: 617610
+21:29:3 Break 1 in function: get_tlvs with frame number: 617610
+21:29:4 Error 1 in function: get_tlv_header with frame number: 617631
+21:29:4 Break 1 in function: get_tlvs with frame number: 617631
+21:29:4 COM3 port closed.
+21:29:4 COM4 port closed.
+21:29:4 data.txt file is closed.
+21:29:4 log.txt file closing...
+21:29:6 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:6 log.txt file is writable.
+21:29:6 data.txt file is writable.
+21:29:6 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:6 COM4 port opened.
+21:29:6 COM3 port opened
+21:29:7 Error 1 in function: get_tlv_header with frame number: 617677
+21:29:7 Break 1 in function: get_tlvs with frame number: 617677
+21:29:7 Error 1 in function: get_tlv_header with frame number: 617690
+21:29:7 Break 1 in function: get_tlvs with frame number: 617690
+21:29:8 COM3 port closed.
+21:29:8 COM4 port closed.
+21:29:8 data.txt file is closed.
+21:29:8 log.txt file closing...
+21:29:10 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:10 log.txt file is writable.
+21:29:10 data.txt file is writable.
+21:29:10 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:10 COM4 port opened.
+21:29:10 COM3 port opened
+21:29:12 Error 1 in function: get_tlv_header with frame number: 617765
+21:29:12 Break 1 in function: get_tlvs with frame number: 617765
+21:29:13 COM3 port closed.
+21:29:13 COM4 port closed.
+21:29:13 data.txt file is closed.
+21:29:13 log.txt file closing...
+21:29:14 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:14 log.txt file is writable.
+21:29:14 data.txt file is writable.
+21:29:14 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:14 COM4 port opened.
+21:29:14 COM3 port opened
+21:29:15 Error 1 in function: get_tlv_header with frame number: 617823
+21:29:15 Break 1 in function: get_tlvs with frame number: 617823
+21:29:16 COM3 port closed.
+21:29:16 COM4 port closed.
+21:29:16 data.txt file is closed.
+21:29:16 log.txt file closing...
+21:29:21 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:21 log.txt file is writable.
+21:29:21 data.txt file is writable.
+21:29:21 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:21 COM4 port opened.
+21:29:21 COM3 port opened
+21:29:23 COM3 port closed.
+21:29:23 COM4 port closed.
+21:29:23 data.txt file is closed.
+21:29:23 log.txt file closing...
+21:29:42 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:42 log.txt file is writable.
+21:29:42 data.txt file is writable.
+21:29:42 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:42 COM4 port opened.
+21:29:42 COM3 port opened
+21:29:43 Error 1 in function: get_tlv_header with frame number: 618335
+21:29:43 Break 1 in function: get_tlvs with frame number: 618335
+21:29:44 COM3 port closed.
+21:29:44 COM4 port closed.
+21:29:44 data.txt file is closed.
+21:29:44 log.txt file closing...
+21:29:48 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:48 log.txt file is writable.
+21:29:48 data.txt file is writable.
+21:29:48 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:48 COM4 port opened.
+21:29:48 COM3 port opened
+21:29:49 Error 1 in function: get_tlv_header with frame number: 618449
+21:29:49 Break 1 in function: get_tlvs with frame number: 618449
+21:29:50 Error 1 in function: get_tlv_header with frame number: 618458
+21:29:50 Break 1 in function: get_tlvs with frame number: 618458
+21:29:50 COM3 port closed.
+21:29:50 COM4 port closed.
+21:29:50 data.txt file is closed.
+21:29:50 log.txt file closing...
+21:29:58 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:29:58 log.txt file is writable.
+21:29:58 data.txt file is writable.
+21:29:58 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:29:58 COM4 port opened.
+21:29:58 COM3 port opened
+21:29:59 Error 1 in function: get_tlv_header with frame number: 618631
+21:29:59 Break 1 in function: get_tlvs with frame number: 618631
+21:29:59 Error 1 in function: get_tlv_header with frame number: 618635
+21:29:59 Break 1 in function: get_tlvs with frame number: 618635
+21:30:0 COM3 port closed.
+21:30:0 COM4 port closed.
+21:30:0 data.txt file is closed.
+21:30:0 log.txt file closing...
+21:30:2 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:30:2 log.txt file is writable.
+21:30:2 data.txt file is writable.
+21:30:2 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:30:2 COM4 port opened.
+21:30:2 COM3 port opened
+21:30:4 COM3 port closed.
+21:30:4 COM4 port closed.
+21:30:4 data.txt file is closed.
+21:30:4 log.txt file closing...
+21:33:9 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:33:9 log.txt file is writable.
+21:33:9 data.txt file is writable.
+21:33:9 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:33:9 COM4 port opened.
+21:33:9 COM3 port opened
+21:33:10 Error 1 in function: get_tlv_header with frame number: 622093.
+21:33:10 Break 1 in function: get_tlvs with frame number: 622093.
+21:33:10 Error 1 in function: get_tlv_header with frame number: 622101.
+21:33:10 Break 1 in function: get_tlvs with frame number: 622101.
+21:33:11 COM3 port closed.
+21:33:11 COM4 port closed.
+21:33:11 data.txt file is closed.
+21:33:11 log.txt file closing...
+21:33:14 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:33:14 log.txt file is writable.
+21:33:14 data.txt file is writable.
+21:33:14 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:33:14 COM4 port opened.
+21:33:14 COM3 port opened
+21:33:16 COM3 port closed.
+21:33:16 COM4 port closed.
+21:33:16 data.txt file is closed.
+21:33:16 log.txt file closing...
+21:33:19 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:33:19 log.txt file is writable.
+21:33:19 data.txt file is writable.
+21:33:19 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:33:19 COM4 port opened.
+21:33:19 COM3 port opened
+21:33:21 COM3 port closed.
+21:33:21 COM4 port closed.
+21:33:21 data.txt file is closed.
+21:33:21 log.txt file closing...
+21:33:27 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:33:27 log.txt file is writable.
+21:33:27 data.txt file is writable.
+21:33:27 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:33:27 COM4 port opened.
+21:33:27 COM3 port opened
+21:33:27 Error 1 in function: get_tlv_header with frame number: 622417.
+21:33:27 Break 1 in function: get_tlvs with frame number: 622417.
+21:33:29 Error 1 in function: get_tlv_header with frame number: 622447.
+21:33:29 Break 1 in function: get_tlvs with frame number: 622447.
+21:33:29 COM3 port closed.
+21:33:29 COM4 port closed.
+21:33:29 data.txt file is closed.
+21:33:29 log.txt file closing...
+21:33:34 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:33:34 log.txt file is writable.
+21:33:34 data.txt file is writable.
+21:33:34 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:33:34 COM4 port opened.
+21:33:34 COM3 port opened
+21:33:34 Error 1 in function: get_tlv_header with frame number: 622544.
+21:33:34 Break 1 in function: get_tlvs with frame number: 622544.
+21:33:36 COM3 port closed.
+21:33:36 COM4 port closed.
+21:33:36 data.txt file is closed.
+21:33:36 log.txt file closing...
+21:33:38 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:33:38 log.txt file is writable.
+21:33:38 data.txt file is writable.
+21:33:38 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:33:38 COM4 port opened.
+21:33:38 COM3 port opened
+21:33:39 Error 1 in function: get_tlv_header with frame number: 622621.
+21:33:39 Break 1 in function: get_tlvs with frame number: 622621.
+21:33:40 COM3 port closed.
+21:33:40 COM4 port closed.
+21:33:40 data.txt file is closed.
+21:33:40 log.txt file closing...
+21:33:41 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+21:33:41 log.txt file is writable.
+21:33:41 data.txt file is writable.
+21:33:41 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+21:33:41 COM4 port opened.
+21:33:41 COM3 port opened
+21:33:42 Error 1 in function: get_tlv_header with frame number: 622674.
+21:33:42 Break 1 in function: get_tlvs with frame number: 622674.
+21:33:43 COM3 port closed.
+21:33:43 COM4 port closed.
+21:33:43 data.txt file is closed.
+21:33:43 log.txt file closing...
