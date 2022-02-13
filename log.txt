@@ -1073,3 +1073,82 @@
 13:28:32 COM4 port closed.
 13:28:32 data.txt file is closed.
 13:28:32 log.txt file closing...
+14:39:37 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+14:39:37 log.txt file is writable.
+14:39:37 data.txt file is writable.
+14:39:37 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+14:39:38 COM4 port opened.
+14:39:38 COM3 port opened
+14:39:40 COM3 port closed.
+14:39:40 COM4 port closed.
+14:39:40 data.txt file is closed.
+14:39:40 log.txt file closing...
+14:43:22 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+14:43:22 log.txt file is writable.
+14:43:22 data.txt file is writable.
+14:43:22 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+14:43:22 COM4 port opened.
+14:43:22 COM3 port opened
+14:43:24 COM3 port closed.
+14:43:24 COM4 port closed.
+14:43:24 data.txt file is closed.
+14:43:24 log.txt file closing...
+14:45:38 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+14:45:38 log.txt file is writable.
+14:45:38 data.txt file is writable.
+14:45:38 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+14:45:38 COM4 port opened.
+14:45:38 COM3 port opened
+14:45:40 COM3 port closed.
+14:45:40 COM4 port closed.
+14:45:40 data.txt file is closed.
+14:45:40 log.txt file closing...
+15:1:37 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+15:1:37 log.txt file is writable.
+15:1:37 data.txt file is writable.
+15:1:37 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+15:1:37 COM4 port opened.
+15:1:37 COM3 port opened
+15:1:39 COM3 port closed.
+15:1:39 COM4 port closed.
+15:1:39 data.txt file is closed.
+15:1:39 log.txt file closing...
+20:31:52 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+20:31:52 log.txt file is writable.
+20:31:52 data.txt file is writable.
+20:31:52 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+20:31:52 COM4 port opened.
+20:31:52 COM3 port opened
+20:31:53 Error 1 in function: get_tlv_header with frame number: 555246.
+20:31:53 Error 1 in function: get_tlvs with frame number: 555246.
+20:31:54 Error 1 in function: get_tlv_header with frame number: 555259.
+20:31:54 Error 1 in function: get_tlvs with frame number: 555259.
+20:31:54 COM3 port closed.
+20:31:54 COM4 port closed.
+20:31:54 data.txt file is closed.
+20:31:54 log.txt file closing...

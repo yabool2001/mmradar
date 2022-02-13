@@ -155,8 +155,12 @@ class PC3D :
         self.tlv_type_presence_indication = 11
         self.frame_header_struct = 'Q9I2H'
         self.frame_header_length = struct.calcsize ( self.frame_header_struct )
+        self.frame_header_dict = dict ()
+        self.frame_header_json = None
         self.tlv_header_struct = '2I'
         self.tlv_header_length = struct.calcsize ( self.tlv_header_struct )
+        self.tlv_header_dict = dict ()
+        self.tlv_header_json = None
         self.pointcloud_unit_struct = '4f'
         self.pointcloud_unit_length = struct.calcsize ( self.pointcloud_unit_struct )
         self.point_struct = '2B2h'
@@ -165,11 +169,10 @@ class PC3D :
         self.target_list_length = struct.calcsize ( self.target_list_struct )
         self.presence_indication_struct = '1I'
         self.presence_indication_length = struct.calcsize ( self.presence_indication_struct )
-        self.frame_header_json = None
+        self.presence_indication_value = None
+        self.presence_indication_json = None
         self.tlvs = None
-        self.tlv_header_json = None
         self.pointcloud_unit = None
-        self.presence_indication = None
         self.azimuth_unit = None
         self.doppler_unit = None
         self.range_unit = None
@@ -177,7 +180,6 @@ class PC3D :
         self.points = None
         self.tlv_list = []
         self.point_list = []
-        self.frame_header_dict = dict ()
 
     def write_data ( self , file ) :
         file.write ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs}}}" )
@@ -222,43 +224,57 @@ class PC3D :
             self.pointcloud_unit = f"{{'point_cloud_unit':{{'error':'{e}'}}}}"
             return False
 
-    def get_presence_indication (self ) :
+    def get_presence_indication ( self ) :
         try :
             presence_indication = struct.unpack ( self.presence_indication_struct , self.raw_data[self.tlv_header_length:][:self.presence_indication_length] )
-            self.presence_indication = f"'presence_indication':{presence_indication[0]}"
+            self.presence_indication_value = presence_indication[0] # Dlacze otrzymuję to jako tuple, a nie int 32bit
+            self.presence_indication_json = f"'presence_indication':{self.presence_indication_value}"
             #print ( type(presence_indication) )
-            #print ( type(self.presence_indication) )
-            print ( f"{self.presence_indication}" )
+            #print ( type(self.presence_indication_value) )
+            print ( f"{self.presence_indication_value}" )
             return True
         except struct.error as e :
-            self.presence_indication = f"{{'presence_indication':{{'error':'{e}'}}}}"
+            self.presence_indication_json = f"{{'presence_indication':{{'error':'{e}'}}}}"
             return False
 
-    def get_tlv ( self ) :
+    def get_tlv_header ( self ) :
         try:
             tlv_type, tlv_length = struct.unpack ( self.tlv_header_struct , self.raw_data[:self.tlv_header_length] )
             self.tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
-            self.tlv_header_json = f"'tlv_header':{self.tlv_header_dict}"
-            if tlv_type == self.tlv_type_pointcloud_2d :
-                if self.get_pointcloud2d_unit () :
-                    self.get_points ( tlv_length )
-                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit},{self.points}}}}}" )
-                else :
-                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit}}}}}" )
-            elif tlv_type == self.tlv_type_target_list or tlv_type == self.tlv_type_target_index :
-                self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
-            elif tlv_type == self.tlv_type_presence_indication :
-                if self.get_presence_indication () :
-                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.presence_indication}}}}}" )
-            self.raw_data = self.raw_data[tlv_length:]
-            return True
         except struct.error as e :
-            self.tlv_header_json = f"'tlv_header':{{'error':{e}}}"
+            self.tlv_header_dict = { 'error': {e} }
+            log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}." )
+        self.tlv_header_json = f"'tlv_header':{self.tlv_header_dict}"
+        if self.tlv_header_dict.get ( 'tlv_type' ) and self.tlv_header_dict.get ( 'tlv_length' ) :
+            return True
+        else:
+            return False
+
+    def get_tlv ( self ) :
+        if self.get_tlv_header  () :
+            if self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_pointcloud_2d :
+                    if self.get_pointcloud2d_unit () : # tutaj coś jest nie tak 
+                        self.get_points ( self.tlv_header_dict['tlv_length'] )
+                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit},{self.points}}}}}" )
+                    else :
+                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit}}}}}" )
+            elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_list or self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_index :
+                self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
+            elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_presence_indication :
+                if self.get_presence_indication () :
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.presence_indication_json}}}}}" )
+            else :
+                self.raw_data = self.raw_data[self.tlv_header_dict['tlv_length']:]
+            return True
+        else :
+            self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
             return False
 
     def get_tlvs ( self ) :
         for i in range ( self.frame_header_dict.get ( 'num_tlvs' ) ) : # get jest bezpieczne, bo w tym miejscu nie jest jeszcze pewny czy self.frame_header_dict['num_tlvs'] istnieje i mogłoby powodować błąd w programie
             if not self.get_tlv () :
+                log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}." )
+                print ( f"Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}." )
                 break
         l = len ( self.tlv_list )
         self.tlvs = "'tlvs':["
@@ -300,7 +316,6 @@ while datetime.datetime.utcnow () < frame_read_time_up :
     raw_data = data_com.read ( 4666 )
     pc3d_object = PC3D ( raw_data )
     pc3d_object.get_frame_header ()
-    #if len ( pc3d_object.frame_header_dict ) :
     if pc3d_object.frame_header_dict.get ( 'num_tlvs' ) :
         pc3d_object.raw_data = pc3d_object.raw_data[pc3d_object.frame_header_length:]
         pc3d_object.get_tlvs ()
