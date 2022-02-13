@@ -201,3 +201,875 @@
 19:53:7 COM9 port closed.
 19:53:7 data.txt file is closed.
 19:53:7 log.txt file closing...
+11:51:12 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+11:51:12 log.txt file is writable.
+11:51:12 data.txt file is writable.
+11:51:12 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+11:51:12 None port error opening: Port must be configured before it can be used.
+11:51:12 None port error opening: Port must be configured before it can be used.
+11:56:34 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+11:56:34 log.txt file is writable.
+11:56:34 data.txt file is writable.
+11:56:34 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+11:56:34 COM3 port opened.
+11:56:34 None port error opening: Port must be configured before it can be used.
+11:56:35 COM3 port ack: b''
+11:56:35 COM3 port ack: b''
+11:56:39 COM3 port ack: b''
+11:56:39 COM3 port ack: b''
+11:56:42 COM3 port ack: b''
+11:56:43 COM3 port ack: b''
+11:56:46 COM3 port ack: b''
+11:56:46 COM3 port ack: b''
+11:56:50 COM3 port ack: b''
+11:56:50 COM3 port ack: b''
+11:56:54 COM3 port ack: b''
+11:56:54 COM3 port ack: b''
+11:56:57 COM3 port ack: b''
+11:56:58 COM3 port ack: b''
+11:57:1 COM3 port ack: b''
+11:57:1 COM3 port ack: b''
+11:57:5 COM3 port ack: b''
+11:57:5 COM3 port ack: b''
+11:57:8 COM3 port ack: b''
+11:57:9 COM3 port ack: b''
+11:57:12 COM3 port ack: b''
+11:57:13 COM3 port ack: b''
+11:57:16 COM3 port ack: b''
+11:57:16 COM3 port ack: b''
+11:57:20 COM3 port ack: b''
+11:57:20 COM3 port ack: b''
+11:57:23 COM3 port ack: b''
+11:57:24 COM3 port ack: b''
+11:57:27 COM3 port ack: b''
+11:57:28 COM3 port ack: b''
+11:57:31 COM3 port ack: b''
+11:57:31 COM3 port ack: b''
+11:57:35 COM3 port ack: b''
+11:57:35 COM3 port ack: b''
+11:57:38 COM3 port ack: b''
+11:57:39 COM3 port ack: b''
+11:57:42 COM3 port ack: b''
+11:57:43 COM3 port ack: b''
+11:57:46 COM3 port ack: b''
+11:57:46 COM3 port ack: b''
+11:57:50 COM3 port ack: b''
+11:57:50 COM3 port ack: b''
+11:57:53 COM3 port ack: b''
+11:57:54 COM3 port ack: b''
+11:57:57 COM3 port ack: b''
+11:57:58 COM3 port ack: b''
+11:58:1 COM3 port ack: b''
+11:58:1 COM3 port ack: b''
+11:58:5 COM3 port ack: b''
+11:58:5 COM3 port ack: b''
+11:58:8 COM3 port ack: b''
+11:58:9 COM3 port ack: b''
+11:58:12 COM3 port ack: b''
+11:58:12 COM3 port ack: b''
+11:58:16 COM3 port ack: b''
+11:58:16 COM3 port ack: b''
+11:58:20 COM3 port ack: b''
+11:58:20 COM3 port ack: b''
+11:58:23 COM3 port ack: b''
+11:58:24 COM3 port ack: b''
+11:58:27 COM3 port ack: b''
+11:58:27 COM3 port ack: b''
+11:58:31 COM3 port ack: b''
+11:58:31 COM3 port ack: b''
+11:58:35 COM3 port ack: b''
+11:58:35 COM3 port ack: b''
+11:58:38 COM3 port ack: b''
+11:58:39 COM3 port ack: b''
+11:58:42 COM3 port ack: b''
+11:58:42 COM3 port ack: b''
+11:58:46 COM3 port ack: b''
+11:58:46 COM3 port ack: b''
+11:58:50 COM3 port ack: b''
+11:58:50 COM3 port ack: b''
+11:58:53 COM3 port ack: b''
+11:58:54 COM3 port ack: b''
+11:58:57 COM3 port ack: b''
+11:58:57 COM3 port ack: b''
+11:59:1 COM3 port ack: b''
+11:59:1 COM3 port ack: b''
+11:59:5 COM3 port ack: b''
+11:59:5 COM3 port ack: b''
+11:59:8 COM3 port ack: b''
+11:59:9 COM3 port ack: b''
+11:59:12 COM3 port ack: b''
+11:59:12 COM3 port ack: b''
+12:0:21 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:0:21 log.txt file is writable.
+12:0:21 data.txt file is writable.
+12:0:21 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:0:21 COM4 port opened.
+12:0:21 COM3 port opened
+12:0:23 COM3 port closed.
+12:0:23 COM4 port closed.
+12:0:23 data.txt file is closed.
+12:0:23 log.txt file closing...
+12:0:41 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:0:41 log.txt file is writable.
+12:0:41 data.txt file is writable.
+12:0:41 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:0:41 COM4 port opened.
+12:0:41 COM3 port opened
+12:0:41 COM4 port ack: b'% SDK Parameters\n'
+12:0:41 COM4 port ack: b'Skipped\n'
+12:0:44 COM4 port ack: b"% See the SDK user's guide for more information\n"
+12:0:44 COM4 port ack: b'Skipped\n'
+12:0:47 COM4 port ack: b'% "C:\\ti\\mmwave_sdk_[VER]\\docs\\mmwave_sdk_user_guide.pdf"\n'
+12:0:47 COM4 port ack: b'Skipped\n'
+12:0:50 COM4 port ack: b'sensorStop\n'
+12:0:50 COM4 port ack: b'Ignored: Sensor is already stopped\n'
+12:0:54 COM4 port ack: b'flushCfg\n'
+12:0:54 COM4 port ack: b'Done\n'
+12:0:57 COM4 port ack: b'dfeDataOutputMode 1\n'
+12:0:57 COM4 port ack: b'Done\n'
+12:1:0 COM4 port ack: b'channelCfg 15 7 0\n'
+12:1:0 COM4 port ack: b'Done\n'
+12:1:3 COM4 port ack: b'adcCfg 2 1\n'
+12:1:3 COM4 port ack: b'Done\n'
+12:1:6 COM4 port ack: b'adcbufCfg -1 0 1 1 1\n'
+12:1:6 COM4 port ack: b'Done\n'
+12:1:9 COM4 port ack: b'lowPower 0 0\n'
+12:1:9 COM4 port ack: b'Done\n'
+12:1:12 COM4 port ack: b'\n'
+12:1:13 COM4 port ack: b'mmwDemo:/>'
+12:1:16 COM4 port ack: b'% Detection Layer Parameters\n'
+12:1:16 COM4 port ack: b'Skipped\n'
+12:1:19 COM4 port ack: b'% See the Detection Layer Tuning Guide for more information\n'
+12:1:19 COM4 port ack: b'Skipped\n'
+12:1:22 COM4 port ack: b'% "C:\\ti\\mmwave_industrial_toolbox_[VER]\\labs\\people_counting\\docs\\3D_people_counting_detection_layer_tuning_guide.pdf"\n'
+12:1:22 COM4 port ack: b'Skipped\n'
+12:1:25 COM4 port ack: b'profileCfg 0 60.75 30.00 25.00 59.10 657930 0 54.71 1   96 2950.00 2 1 36 \n'
+12:1:25 COM4 port ack: b'Done\n'
+12:1:28 COM4 port ack: b'chirpCfg 0 0 0 0 0 0 0 1\n'
+12:1:28 COM4 port ack: b'Done\n'
+12:1:31 COM4 port ack: b'chirpCfg 1 1 0 0 0 0 0 2\n'
+12:1:31 COM4 port ack: b'Done\n'
+12:1:34 COM4 port ack: b'chirpCfg 2 2 0 0 0 0 0 4\n'
+12:1:34 COM4 port ack: b'Done\n'
+12:1:38 COM4 port ack: b'frameCfg 0 2  96  0 55.00 1 0\n'
+12:1:38 COM4 port ack: b'Done\n'
+12:1:41 COM4 port ack: b'dynamicRACfarCfg -1 4 4 2 2 8 12 4 8 5.00 8.00 0.40 1 1\n'
+12:1:41 COM4 port ack: b'Done\n'
+12:1:44 COM4 port ack: b'staticRACfarCfg -1 6 2 2 2 8 8 6 4 8.00 15.00 0.30 0 0\n'
+12:1:44 COM4 port ack: b'Done\n'
+12:1:47 COM4 port ack: b'dynamicRangeAngleCfg -1 0.75 0.0010 1 0\n'
+12:1:47 COM4 port ack: b'Done\n'
+12:1:50 COM4 port ack: b'dynamic2DAngleCfg -1 1.5 0.0300 1 0 1 0.30 0.85 8.00\n'
+12:1:50 COM4 port ack: b'Done\n'
+12:1:53 COM4 port ack: b'staticRangeAngleCfg -1 0 8 8\n'
+12:1:53 COM4 port ack: b'Done\n'
+12:1:56 COM4 port ack: b'antGeometry0 0 -1 -2 -3 -2 -3 -4 -5 -4 -5 -6 -7\n'
+12:1:56 COM4 port ack: b'Done\n'
+12:1:59 COM4 port ack: b'antGeometry1 -1 -1 -1 -1 0 0 0 0 -1 -1 -1 -1\n'
+12:1:59 COM4 port ack: b'Done\n'
+12:2:3 COM4 port ack: b'antPhaseRot 1 1 1 1 1 1 1 1 1 1 1 1\n'
+12:2:3 COM4 port ack: b'Done\n'
+12:2:6 COM4 port ack: b'fovCfg -1 70.0 20.0\n'
+12:2:6 COM4 port ack: b'Done\n'
+12:2:9 COM4 port ack: b'compRangeBiasAndRxChanPhase 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0\n'
+12:2:9 COM4 port ack: b'Done\n'
+12:2:12 COM4 port ack: b'\n'
+12:2:12 COM4 port ack: b'mmwDemo:/>'
+12:2:15 COM4 port ack: b'% Tracker Layer Parameters\n'
+12:2:15 COM4 port ack: b'Skipped\n'
+12:2:19 COM4 port ack: b'% See the Tracking Layer Tuning Guide for more information\n'
+12:2:19 COM4 port ack: b'Skipped\n'
+12:2:22 COM4 port ack: b'% "C:\\ti\\mmwave_industrial_toolbox_[VER]\\labs\\people_counting\\docs\\3D_people_counting_tracker_layer_tuning_guide.pdf"\n'
+12:2:22 COM4 port ack: b'Skipped\n'
+12:2:25 COM4 port ack: b'staticBoundaryBox -3 3 0.5 7.5 0 3\n'
+12:2:25 COM4 port ack: b'Done\n'
+12:2:28 COM4 port ack: b'boundaryBox -4 4 0 8 0 3\n'
+12:2:28 COM4 port ack: b'Done\n'
+12:2:31 COM4 port ack: b'sensorPosition 2 0 15\n'
+12:2:31 COM4 port ack: b'Done\n'
+12:2:34 COM4 port ack: b'gatingParam 3 2 2 2 4\n'
+12:2:34 COM4 port ack: b'Done\n'
+12:2:37 COM4 port ack: b'stateParam 3 3 12 500 5 600\n'
+12:2:37 COM4 port ack: b'Done\n'
+12:2:40 COM4 port ack: b'allocationParam 40 100 0.1 20 0.5 20\n'
+12:2:40 COM4 port ack: b'Done\n'
+12:2:44 COM4 port ack: b'maxAcceleration 0.1 0.1 0.1\n'
+12:2:44 COM4 port ack: b'Done\n'
+12:2:47 COM4 port ack: b'trackingCfg 1 2 800 30 46 96 55\n'
+12:2:47 COM4 port ack: b'Done\n'
+12:2:50 COM4 port ack: b'presenceBoundaryBox -3 3 0.5 7.5 0 3\n'
+12:2:50 COM4 port ack: b'Done\n'
+12:2:53 COM4 port ack: b'sensorStart\n'
+12:2:53 COM4 port ack: b'Debug: Init Calibration Status = 0xffe\n'
+12:2:58 COM3 port closed.
+12:2:58 COM4 port closed.
+12:2:58 data.txt file is closed.
+12:2:58 log.txt file closing...
+12:7:7 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:7:7 log.txt file is writable.
+12:7:7 data.txt file is writable.
+12:7:7 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:7:7 COM4 port opened.
+12:7:7 COM3 port opened
+12:7:9 COM3 port closed.
+12:7:9 COM4 port closed.
+12:7:9 data.txt file is closed.
+12:7:9 log.txt file closing...
+12:9:17 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:9:17 log.txt file is writable.
+12:9:17 data.txt file is writable.
+12:9:17 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:9:17 COM4 port opened.
+12:9:17 COM3 port opened
+12:9:19 COM3 port closed.
+12:9:19 COM4 port closed.
+12:9:19 data.txt file is closed.
+12:9:19 log.txt file closing...
+12:9:27 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:9:27 log.txt file is writable.
+12:9:27 data.txt file is writable.
+12:9:27 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:9:27 COM4 port opened.
+12:9:27 COM3 port opened
+12:12:32 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:12:32 log.txt file is writable.
+12:12:32 data.txt file is writable.
+12:12:32 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:12:32 COM4 port opened.
+12:12:32 COM3 port opened
+12:12:34 COM3 port closed.
+12:12:34 COM4 port closed.
+12:12:34 data.txt file is closed.
+12:12:34 log.txt file closing...
+12:17:26 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:17:26 log.txt file is writable.
+12:17:26 data.txt file is writable.
+12:17:26 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:17:26 COM4 port opened.
+12:17:26 COM3 port opened
+12:18:39 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:18:39 log.txt file is writable.
+12:18:39 data.txt file is writable.
+12:18:39 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:18:40 COM4 port opened.
+12:18:40 COM3 port opened
+12:24:19 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:24:19 log.txt file is writable.
+12:24:19 data.txt file is writable.
+12:24:19 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:24:19 COM4 port opened.
+12:24:19 COM3 port opened
+12:24:21 COM3 port closed.
+12:24:21 COM4 port closed.
+12:24:21 data.txt file is closed.
+12:24:21 log.txt file closing...
+12:24:59 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:24:59 log.txt file is writable.
+12:24:59 data.txt file is writable.
+12:24:59 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:24:59 COM4 port opened.
+12:24:59 COM3 port opened
+12:25:1 COM3 port closed.
+12:25:1 COM4 port closed.
+12:25:1 data.txt file is closed.
+12:25:1 log.txt file closing...
+12:25:58 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:25:58 log.txt file is writable.
+12:25:58 data.txt file is writable.
+12:25:58 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:25:59 COM4 port opened.
+12:25:59 COM3 port opened
+12:26:1 COM3 port closed.
+12:26:1 COM4 port closed.
+12:26:1 data.txt file is closed.
+12:26:1 log.txt file closing...
+12:37:17 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:37:17 log.txt file is writable.
+12:37:17 data.txt file is writable.
+12:37:17 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:37:17 COM4 port opened.
+12:37:17 COM3 port opened
+12:37:19 COM3 port closed.
+12:37:19 COM4 port closed.
+12:37:19 data.txt file is closed.
+12:37:19 log.txt file closing...
+12:38:15 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:38:15 log.txt file is writable.
+12:38:15 data.txt file is writable.
+12:38:15 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:38:15 COM4 port opened.
+12:38:15 COM3 port opened
+12:38:17 COM3 port closed.
+12:38:17 COM4 port closed.
+12:38:17 data.txt file is closed.
+12:38:17 log.txt file closing...
+12:38:36 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:38:36 log.txt file is writable.
+12:38:36 data.txt file is writable.
+12:38:36 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:38:36 COM4 port opened.
+12:38:36 COM3 port opened
+12:38:38 COM3 port closed.
+12:38:38 COM4 port closed.
+12:38:38 data.txt file is closed.
+12:38:38 log.txt file closing...
+12:38:48 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:38:48 log.txt file is writable.
+12:38:48 data.txt file is writable.
+12:38:48 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:38:48 COM4 port opened.
+12:38:48 COM3 port opened
+12:38:50 COM3 port closed.
+12:38:50 COM4 port closed.
+12:38:50 data.txt file is closed.
+12:38:50 log.txt file closing...
+12:41:7 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:41:7 log.txt file is writable.
+12:41:7 data.txt file is writable.
+12:41:7 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:41:7 COM4 port opened.
+12:41:7 COM3 port opened
+12:41:9 COM3 port closed.
+12:41:9 COM4 port closed.
+12:41:9 data.txt file is closed.
+12:41:9 log.txt file closing...
+12:41:15 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:41:15 log.txt file is writable.
+12:41:15 data.txt file is writable.
+12:41:15 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:41:15 COM4 port opened.
+12:41:15 COM3 port opened
+12:41:17 COM3 port closed.
+12:41:17 COM4 port closed.
+12:41:17 data.txt file is closed.
+12:41:17 log.txt file closing...
+12:52:2 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:52:2 log.txt file is writable.
+12:52:2 data.txt file is writable.
+12:52:2 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:52:2 COM4 port opened.
+12:52:2 COM3 port opened
+12:52:4 COM3 port closed.
+12:52:4 COM4 port closed.
+12:52:4 data.txt file is closed.
+12:52:4 log.txt file closing...
+12:52:8 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:52:8 log.txt file is writable.
+12:52:8 data.txt file is writable.
+12:52:8 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:52:8 COM4 port opened.
+12:52:8 COM3 port opened
+12:52:10 COM3 port closed.
+12:52:10 COM4 port closed.
+12:52:10 data.txt file is closed.
+12:52:10 log.txt file closing...
+12:52:14 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:52:14 log.txt file is writable.
+12:52:14 data.txt file is writable.
+12:52:14 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:52:14 COM4 port opened.
+12:52:14 COM3 port opened
+12:52:16 COM3 port closed.
+12:52:16 COM4 port closed.
+12:52:16 data.txt file is closed.
+12:52:16 log.txt file closing...
+12:55:28 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:55:28 log.txt file is writable.
+12:55:28 data.txt file is writable.
+12:55:28 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:55:28 COM4 port opened.
+12:55:28 COM3 port opened
+12:55:30 COM3 port closed.
+12:55:30 COM4 port closed.
+12:55:30 data.txt file is closed.
+12:55:30 log.txt file closing...
+12:55:34 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:55:34 log.txt file is writable.
+12:55:34 data.txt file is writable.
+12:55:34 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:55:34 COM4 port opened.
+12:55:34 COM3 port opened
+12:55:36 COM3 port closed.
+12:55:36 COM4 port closed.
+12:55:36 data.txt file is closed.
+12:55:36 log.txt file closing...
+12:57:35 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:57:35 log.txt file is writable.
+12:57:35 data.txt file is writable.
+12:57:35 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:57:35 COM4 port opened.
+12:57:35 COM3 port opened
+12:57:37 COM3 port closed.
+12:57:37 COM4 port closed.
+12:57:37 data.txt file is closed.
+12:57:37 log.txt file closing...
+12:57:48 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:57:48 log.txt file is writable.
+12:57:48 data.txt file is writable.
+12:57:48 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:57:48 COM4 port opened.
+12:57:48 COM3 port opened
+12:57:50 COM3 port closed.
+12:57:50 COM4 port closed.
+12:57:50 data.txt file is closed.
+12:57:50 log.txt file closing...
+12:57:53 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+12:57:53 log.txt file is writable.
+12:57:53 data.txt file is writable.
+12:57:53 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+12:57:53 COM4 port opened.
+12:57:53 COM3 port opened
+12:57:56 COM3 port closed.
+12:57:56 COM4 port closed.
+12:57:56 data.txt file is closed.
+12:57:56 log.txt file closing...
+13:1:46 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:1:46 log.txt file is writable.
+13:1:46 data.txt file is writable.
+13:1:46 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:1:46 COM4 port opened.
+13:1:46 COM3 port opened
+13:1:48 COM3 port closed.
+13:1:48 COM4 port closed.
+13:1:48 data.txt file is closed.
+13:1:48 log.txt file closing...
+13:2:48 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:2:48 log.txt file is writable.
+13:2:48 data.txt file is writable.
+13:2:48 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:2:48 COM4 port opened.
+13:2:48 COM3 port opened
+13:2:50 COM3 port closed.
+13:2:50 COM4 port closed.
+13:2:50 data.txt file is closed.
+13:2:50 log.txt file closing...
+13:3:57 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:3:57 log.txt file is writable.
+13:3:57 data.txt file is writable.
+13:3:57 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:3:57 COM4 port opened.
+13:3:57 COM3 port opened
+13:3:59 COM3 port closed.
+13:3:59 COM4 port closed.
+13:3:59 data.txt file is closed.
+13:3:59 log.txt file closing...
+13:9:58 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:9:58 log.txt file is writable.
+13:9:58 data.txt file is writable.
+13:9:58 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:9:58 COM4 port opened.
+13:9:58 COM3 port opened
+13:10:0 COM3 port closed.
+13:10:0 COM4 port closed.
+13:10:0 data.txt file is closed.
+13:10:0 log.txt file closing...
+13:11:33 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:11:33 log.txt file is writable.
+13:11:33 data.txt file is writable.
+13:11:33 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:11:33 COM4 port opened.
+13:11:33 COM3 port opened
+13:11:35 COM3 port closed.
+13:11:35 COM4 port closed.
+13:11:35 data.txt file is closed.
+13:11:35 log.txt file closing...
+13:15:18 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:15:18 log.txt file is writable.
+13:15:18 data.txt file is writable.
+13:15:18 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:15:18 COM4 port opened.
+13:15:18 COM3 port opened
+13:15:20 COM3 port closed.
+13:15:20 COM4 port closed.
+13:15:20 data.txt file is closed.
+13:15:20 log.txt file closing...
+13:15:28 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:15:28 log.txt file is writable.
+13:15:28 data.txt file is writable.
+13:15:28 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:15:28 COM4 port opened.
+13:15:28 COM3 port opened
+13:15:30 COM3 port closed.
+13:15:30 COM4 port closed.
+13:15:30 data.txt file is closed.
+13:15:30 log.txt file closing...
+13:16:40 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:16:40 log.txt file is writable.
+13:16:40 data.txt file is writable.
+13:16:40 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:16:40 COM4 port opened.
+13:16:40 COM3 port opened
+13:16:42 COM3 port closed.
+13:16:42 COM4 port closed.
+13:16:42 data.txt file is closed.
+13:16:42 log.txt file closing...
+13:17:38 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:17:38 log.txt file is writable.
+13:17:38 data.txt file is writable.
+13:17:38 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:17:38 COM4 port opened.
+13:17:38 COM3 port opened
+13:17:40 COM3 port closed.
+13:17:40 COM4 port closed.
+13:17:40 data.txt file is closed.
+13:17:40 log.txt file closing...
+13:19:26 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:19:26 log.txt file is writable.
+13:19:26 data.txt file is writable.
+13:19:26 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:19:26 COM4 port opened.
+13:19:26 COM3 port opened
+13:19:28 COM3 port closed.
+13:19:28 COM4 port closed.
+13:19:28 data.txt file is closed.
+13:19:28 log.txt file closing...
+13:20:3 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:20:3 log.txt file is writable.
+13:20:3 data.txt file is writable.
+13:20:3 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:20:3 COM4 port opened.
+13:20:3 COM3 port opened
+13:20:5 COM3 port closed.
+13:20:5 COM4 port closed.
+13:20:5 data.txt file is closed.
+13:20:5 log.txt file closing...
+13:20:24 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:20:24 log.txt file is writable.
+13:20:24 data.txt file is writable.
+13:20:24 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:20:25 COM4 port opened.
+13:20:25 COM3 port opened
+13:20:27 COM3 port closed.
+13:20:27 COM4 port closed.
+13:20:27 data.txt file is closed.
+13:20:27 log.txt file closing...
+13:20:42 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:20:42 log.txt file is writable.
+13:20:42 data.txt file is writable.
+13:20:42 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:20:42 COM4 port opened.
+13:20:42 COM3 port opened
+13:20:44 COM3 port closed.
+13:20:44 COM4 port closed.
+13:20:44 data.txt file is closed.
+13:20:44 log.txt file closing...
+13:21:1 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:21:1 log.txt file is writable.
+13:21:1 data.txt file is writable.
+13:21:1 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:21:1 COM4 port opened.
+13:21:1 COM3 port opened
+13:21:3 COM3 port closed.
+13:21:3 COM4 port closed.
+13:21:3 data.txt file is closed.
+13:21:3 log.txt file closing...
+13:22:11 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:22:11 log.txt file is writable.
+13:22:11 data.txt file is writable.
+13:22:11 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:22:11 COM4 port opened.
+13:22:11 COM3 port opened
+13:22:13 COM3 port closed.
+13:22:13 COM4 port closed.
+13:22:13 data.txt file is closed.
+13:22:13 log.txt file closing...
+13:22:17 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:22:17 log.txt file is writable.
+13:22:17 data.txt file is writable.
+13:22:17 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:22:17 COM4 port opened.
+13:22:17 COM3 port opened
+13:22:19 COM3 port closed.
+13:22:19 COM4 port closed.
+13:22:19 data.txt file is closed.
+13:22:19 log.txt file closing...
+13:22:22 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:22:22 log.txt file is writable.
+13:22:22 data.txt file is writable.
+13:22:22 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:22:22 COM4 port opened.
+13:22:22 COM3 port opened
+13:22:24 COM3 port closed.
+13:22:24 COM4 port closed.
+13:22:24 data.txt file is closed.
+13:22:24 log.txt file closing...
+13:22:32 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:22:32 log.txt file is writable.
+13:22:32 data.txt file is writable.
+13:22:32 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:22:32 COM4 port opened.
+13:22:32 COM3 port opened
+13:22:34 COM3 port closed.
+13:22:34 COM4 port closed.
+13:22:34 data.txt file is closed.
+13:22:34 log.txt file closing...
+13:25:42 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:25:42 log.txt file is writable.
+13:25:42 data.txt file is writable.
+13:25:42 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:25:42 COM4 port opened.
+13:25:42 COM3 port opened
+13:25:44 COM3 port closed.
+13:25:44 COM4 port closed.
+13:25:44 data.txt file is closed.
+13:25:44 log.txt file closing...
+13:25:50 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:25:50 log.txt file is writable.
+13:25:50 data.txt file is writable.
+13:25:50 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:25:50 COM4 port opened.
+13:25:50 COM3 port opened
+13:25:52 COM3 port closed.
+13:25:52 COM4 port closed.
+13:25:52 data.txt file is closed.
+13:25:52 log.txt file closing...
+13:28:29 
+
+#########################################
+########## serials3.py started ##########
+#########################################
+
+13:28:29 log.txt file is writable.
+13:28:29 data.txt file is writable.
+13:28:29 chirp_cfg/ISK_6m_default-mzo-v.1.cfg file is readable.
+13:28:30 COM4 port opened.
+13:28:30 COM3 port opened
+13:28:32 COM3 port closed.
+13:28:32 COM4 port closed.
+13:28:32 data.txt file is closed.
+13:28:32 log.txt file closing...

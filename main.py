@@ -1,8 +1,9 @@
-import azure_iot_hub_mzemlopl as aih
+#import azure_iot_hub_mzemlopl as aih
 from contextlib import nullcontext
 import datetime
 import json
 from os import error, system
+import platform
 import time
 import serial
 import serial.tools.list_ports
@@ -26,10 +27,20 @@ conf_com                = serial.Serial ()
 data_com                = serial.Serial ()
 serial_ports =  serial.tools.list_ports.comports()
 for s_p in serial_ports:
-    if 'CP2105'.lower() in s_p.description.lower() and 'Enhanced' in s_p.description.lower():
-        conf_com.port = s_p.name
-    if 'CP2105'.lower() in s_p.description.lower() and 'Standard' in s_p.description.lower():
-        data_com.port = s_p.name
+    if 'CP2105'.lower () in s_p.description.lower () and 'Enhanced'.lower () in s_p.description.lower ():
+        if platform.system () == "Windows":
+            conf_com.port = s_p.name
+        elif platform.system () == "Linux":
+            conf_com.port = '/dev/' + s_p.name
+        else:
+            print ('Error: No compatible os!')
+    if 'CP2105'.lower () in s_p.description.lower () and 'Standard'.lower () in s_p.description.lower ():
+        if platform.system () == "Windows":
+            data_com.port = s_p.name
+        elif platform.system () == "Linux":
+            data_com.port = '/dev/' + s_p.name
+        else:
+            print ('Error: No compatible os!')
 conf_com.baudrate       = 115200
 data_com.baudrate       = 921600*1
 conf_com.bytesize       = serial.EIGHTBITS
@@ -87,7 +98,7 @@ elif people_counting_mode == 'hvac':
     conf_file_name = hvac_cfg_file_name
 else:
     print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
-# do tąd
+#  
 try:
     with open ( f'{conf_file_name}' , 'r' , encoding='utf-8' ) as conf_file:
         if conf_file.readable () :
@@ -132,7 +143,7 @@ def chirp_conf () :
 ####################### AZURE CONNECTION #######################
 ################################################################
 # Version for IoT Hub connection
-open_client = aih.open_azure ()
+#open_client = aih.open_azure ()
 
 class PC3D :
     def __init__ ( self , raw_data ) :
@@ -154,11 +165,9 @@ class PC3D :
         self.target_list_length = struct.calcsize ( self.target_list_struct )
         self.presence_indication_struct = '1I'
         self.presence_indication_length = struct.calcsize ( self.presence_indication_struct )
-        self.frame_header = None
+        self.frame_header_json = None
         self.tlvs = None
-        self.num_tlvs = None
-        self.frame_header = None
-        self.tlv_header = None
+        self.tlv_header_json = None
         self.pointcloud_unit = None
         self.presence_indication = None
         self.azimuth_unit = None
@@ -168,13 +177,13 @@ class PC3D :
         self.points = None
         self.tlv_list = []
         self.point_list = []
-        #self.frame_header_data = dict ()
+        self.frame_header_dict = dict ()
 
     def write_data ( self , file ) :
-        file.write ( f"\n\n{{frame:{self.frame_header},{self.tlvs}}}" )
+        file.write ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs}}}" )
         # Azure part
         #try :
-        #    azure_client.send_message ( f"\n\n{{frame:{self.frame_header},{self.tlvs}}}" )
+        #    azure_client.send_message ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs}}}" )
         #except :
         #    print ( "Azure error connecting or sending message")
 
@@ -216,8 +225,10 @@ class PC3D :
     def get_presence_indication (self ) :
         try :
             presence_indication = struct.unpack ( self.presence_indication_struct , self.raw_data[self.tlv_header_length:][:self.presence_indication_length] )
-            self.presence_indication = f"{{'presence_indication':{presence_indication}}}"
-            print ( f"{presence_indication}" )
+            self.presence_indication = f"'presence_indication':{presence_indication[0]}"
+            #print ( type(presence_indication) )
+            #print ( type(self.presence_indication) )
+            print ( f"{self.presence_indication}" )
             return True
         except struct.error as e :
             self.presence_indication = f"{{'presence_indication':{{'error':'{e}'}}}}"
@@ -226,26 +237,27 @@ class PC3D :
     def get_tlv ( self ) :
         try:
             tlv_type, tlv_length = struct.unpack ( self.tlv_header_struct , self.raw_data[:self.tlv_header_length] )
-            self.tlv_header = f"'tlv_header':{{'tlv_type':{tlv_type},'tlv_length':{tlv_length}}}"
+            self.tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
+            self.tlv_header_json = f"'tlv_header':{self.tlv_header_dict}"
             if tlv_type == self.tlv_type_pointcloud_2d :
                 if self.get_pointcloud2d_unit () :
                     self.get_points ( tlv_length )
-                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header},{self.pointcloud_unit},{self.points}}}}}" )
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit},{self.points}}}}}" )
                 else :
-                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header},{self.pointcloud_unit}}}}}" )
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit}}}}}" )
             elif tlv_type == self.tlv_type_target_list or tlv_type == self.tlv_type_target_index :
-                self.tlv_list.append ( f"{{tlv:{{{self.tlv_header}}}}}" )
+                self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
             elif tlv_type == self.tlv_type_presence_indication :
                 if self.get_presence_indication () :
-                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header},{self.presence_indication}}}}}" )
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.presence_indication}}}}}" )
             self.raw_data = self.raw_data[tlv_length:]
             return True
         except struct.error as e :
-            self.tlv_header = f"'tlv_header':{{'error':{e}}}"
+            self.tlv_header_json = f"'tlv_header':{{'error':{e}}}"
             return False
 
     def get_tlvs ( self ) :
-        for i in range ( self.num_tlvs ) :
+        for i in range ( self.frame_header_dict.get ( 'num_tlvs' ) ) : # get jest bezpieczne, bo w tym miejscu nie jest jeszcze pewny czy self.frame_header_dict['num_tlvs'] istnieje i mogłoby powodować błąd w programie
             if not self.get_tlv () :
                 break
         l = len ( self.tlv_list )
@@ -261,13 +273,13 @@ class PC3D :
     def get_frame_header ( self ) :
         try:
             sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( self.frame_header_struct , self.raw_data[:self.frame_header_length] )
-            self.num_tlvs = num_tlvs
             if sync == self.control :
-                self.frame_header = f"{{'frame_header':{{'sync':{sync},'version':{version},'platform':{platform}, 'total_packet_length':{total_packet_length},'frame_number':{frame_number},'subframe_number':{subframe_number},'chirp_processing_margin':{chirp_processing_margin},'frame_processing_margin':{frame_processing_margin},'uart_sent_time':{uart_sent_time},'track_process_time':{track_process_time},'num_tlvs':{num_tlvs},'checksum':{checksum}}}}}"
+                self.frame_header_dict = { 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'frame_number' : frame_number , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'num_tlvs' : num_tlvs , 'checksum' : checksum }
+                self.frame_header_json = f"{{'frame_header':{self.frame_header_dict}}}"
             else :
-                self.frame_header = f"{{'frame_header':{{'error':'control = {sync}'}}}}"
+                self.frame_header_json = f"{{'frame_header':{{'error':'control = {sync}'}}}}"
         except struct.error as e :
-            self.frame_header = f"{{'frame_header':{{'error':'{e}'}}}}"
+            self.frame_header_json = f"{{'frame_header':{{'error':'{e}'}}}}"
 
 ################################################################
 ####################### START PROGRAM ##########################
@@ -278,7 +290,7 @@ print ( hello )
 # Configure chirp 
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-chirp_conf ()
+#chirp_conf ()
 
 # Read data
 data_com.reset_output_buffer()
@@ -288,11 +300,11 @@ while datetime.datetime.utcnow () < frame_read_time_up :
     raw_data = data_com.read ( 4666 )
     pc3d_object = PC3D ( raw_data )
     pc3d_object.get_frame_header ()
-    if pc3d_object.num_tlvs :
+    #if len ( pc3d_object.frame_header_dict ) :
+    if pc3d_object.frame_header_dict.get ( 'num_tlvs' ) :
         pc3d_object.raw_data = pc3d_object.raw_data[pc3d_object.frame_header_length:]
         pc3d_object.get_tlvs ()
     pc3d_object.write_data ( data_file )
-
     del pc3d_object
 
 ################################################################
