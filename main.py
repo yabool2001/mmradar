@@ -19,7 +19,7 @@ hello = "\n\n#########################################\n########## mmradar.py st
 print ( hello )
 
 ######################## OPEN LOG FILE #########################
-log_file_name           = 'log.txt'
+log_file_name           = 'app.log'
 # Open log file
 try:
     log_file = open ( log_file_name , 'a' , encoding='utf-8' )
@@ -36,7 +36,7 @@ except IOError as e :
 ################################################################
 
 raws                    = bytes(1)
-data_file_name          = 'data.txt'
+data_file_name          = 'data.log'
 hvac_cfg_file_name      = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name      = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
 conf_com                = serial.Serial ()
