@@ -181,6 +181,8 @@ class PC3D :
         self.pointcloud_unit_length = struct.calcsize ( self.pointcloud_unit_struct )
         self.point_struct = '2B2h'
         self.point_length = struct.calcsize ( self.point_struct )
+        self.point_dict = dict ()
+        self.points_dict = dict ()
         self.point_list = []
         self.points_json = None
         self.pointcloud_unit_dict = dict ()
@@ -210,9 +212,11 @@ class PC3D :
                 azimuth_point , doppler_point , range_point , snr_point = struct.unpack (self. point_struct , self.raw_data[(self.tlv_header_length + self.pointcloud_unit_length ) + ( i * self.point_length ):][:self.point_length] )
                 # Zapisz punkt
                 if doppler_point :
-                    self.point_list.append ( f"{{'azimuth_point':{azimuth_point},'doppler_point':{doppler_point}, 'range_point':{range_point},'snr_point':{snr_point}}}" )
+                    self.point_dict = {'azimuth_point' : azimuth_point , 'doppler_point' : doppler_point , 'range_point' : range_point , 'snr_point' : snr_point }
+                    self.point_list.append ( f"{self.point_dict}" )
             except struct.error as e :
                 self.point_list.append ( f"{{'error':'{e}'}}" )
+                log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error {e} during unpacking point #{i}' )
         l = len ( self.point_list )
         self.points_json = f"'num_points':{points_number},'points':["
         for i in range ( len ( self.point_list ) ) :
@@ -301,7 +305,7 @@ class PC3D :
         try:
             sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( self.frame_header_struct , self.raw_data[:self.frame_header_length] )
             if sync == self.control :
-                self.frame_header_dict = { 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'frame_number' : frame_number , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'num_tlvs' : num_tlvs , 'checksum' : checksum }
+                self.frame_header_dict = { 'frame_number' : frame_number , 'subframe_number' : subframe_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum }
             else :
                 self.frame_header_dict = { 'error' : 'control != {sync}' }
         except struct.error as e :
