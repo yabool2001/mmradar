@@ -14,15 +14,28 @@ import struct
 import sys
 # sys.setdefaultencoding('utf-8')
 
+########################## START APP## #########################
+hello = "\n\n#########################################\n########## mmradar.py started ##########\n#########################################\n"
+print ( hello )
+
+######################## OPEN LOG FILE #########################
+log_file_name           = 'log.txt'
+# Open log file
+try:
+    log_file = open ( log_file_name , 'a' , encoding='utf-8' )
+    if log_file.writable() :
+        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {hello}' )
+        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {log_file.name} file is writable.' )
+except IOError as e :
+    print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {log_file.name} file opening problem... Exiting the app! {str(e)}' )
+    exit ()
+
+
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
 
-global                  chirp_cfg
-global                  log_file , data_file
-global                  conf_com , data_com
 raws                    = bytes(1)
-log_file_name           = 'log.txt'
 data_file_name          = 'data.txt'
 hvac_cfg_file_name      = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name      = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
@@ -37,13 +50,14 @@ for s_p in serial_ports:
             conf_com.port = '/dev/' + s_p.name
         else:
             print ('Error: No compatible os!')
+            log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error 01: No compatible os!' )
     if 'CP2105'.lower () in s_p.description.lower () and 'Standard'.lower () in s_p.description.lower ():
         if platform.system () == "Windows":
             data_com.port = s_p.name
         elif platform.system () == "Linux":
             data_com.port = '/dev/' + s_p.name
         else:
-            print ('Error: No compatible os!')
+            log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error 02: No compatible os!' )
 conf_com.baudrate       = 115200
 data_com.baudrate       = 921600*1
 conf_com.bytesize       = serial.EIGHTBITS
@@ -61,11 +75,8 @@ data_com_delta_seconds = 2
 # people_counting_mode: 'hvac' - Sense And Direct Hvac Control; 'pc3d' - 3d People Counting
 people_counting_mode = 'pc3d'
 
-hello = "\n\n#########################################\n########## serials3.py started ##########\n#########################################\n"
 
-################################################################
-############ OPEN LOG, DATA AND CHIRP CONF FILE ################
-################################################################
+#################### OPEN DATA AND CHIRP CONF FILE ##################
 
 # Open log file
 try:
@@ -82,7 +93,7 @@ try:
     if data_file.writable() :
         log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file is writable.' )
 except IOError as e :
-    print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file opening problem... {str(e)}' )
+    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file opening problem... {str(e)}' )
 
 # Open Chirp configuration file and read configuration to chirp_cfg
 
@@ -304,8 +315,6 @@ class PC3D :
 ################################################################
 ####################### START PROGRAM ##########################
 ################################################################
-
-print ( hello )
 
 # Configure chirp 
 conf_com.reset_input_buffer()
