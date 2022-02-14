@@ -1,1 +1,5 @@
+# ignore all files with extension:
 *.log
+
+# ignore all files in any directories:
+/__pycache__
