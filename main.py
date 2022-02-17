@@ -18,12 +18,8 @@ from serial_comm import set_serial_cfg , close_serial_comm
 ######################## DEFINITIONS ###########################
 ################################################################
 
-global                  chirp_cfg
-global                  log_file , data_file
-global                  conf_com , data_com
 raws                    = bytes(1)
-log_file_name           = 'log.txt'
-data_file_name          = 'data.txt'
+data_file_name          = 'data.log'
 hvac_cfg_file_name      = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name      = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
 
@@ -36,11 +32,8 @@ data_com_delta_seconds = 2
 # people_counting_mode: 'hvac' - Sense And Direct Hvac Control; 'pc3d' - 3d People Counting
 people_counting_mode = 'pc3d'
 
-hello = "\n\n#########################################\n########## serials3.py started ##########\n#########################################\n"
 
-################################################################
-############ OPEN LOG, DATA AND CHIRP CONF FILE ################
-################################################################
+#################### OPEN DATA AND CHIRP CONF FILE ##################
 
 # Open log file
 try:
@@ -57,7 +50,7 @@ try:
     if data_file.writable() :
         log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file is writable.' )
 except IOError as e :
-    print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file opening problem... {str(e)}' )
+    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file opening problem... {str(e)}' )
 
 # Open Chirp configuration file and read configuration to chirp_cfg
 
@@ -145,6 +138,8 @@ class PC3D :
         self.pointcloud_unit_length = struct.calcsize ( self.pointcloud_unit_struct )
         self.point_struct = '2B2h'
         self.point_length = struct.calcsize ( self.point_struct )
+        self.point_dict = dict ()
+        self.points_dict = dict ()
         self.point_list = []
         self.points_json = None
         self.pointcloud_unit_dict = dict ()
@@ -174,9 +169,11 @@ class PC3D :
                 azimuth_point , doppler_point , range_point , snr_point = struct.unpack (self. point_struct , self.raw_data[(self.tlv_header_length + self.pointcloud_unit_length ) + ( i * self.point_length ):][:self.point_length] )
                 # Zapisz punkt
                 if doppler_point :
-                    self.point_list.append ( f"{{'azimuth_point':{azimuth_point},'doppler_point':{doppler_point}, 'range_point':{range_point},'snr_point':{snr_point}}}" )
+                    self.point_dict = {'azimuth_point' : azimuth_point , 'doppler_point' : doppler_point , 'range_point' : range_point , 'snr_point' : snr_point }
+                    self.point_list.append ( f"{self.point_dict}" )
             except struct.error as e :
                 self.point_list.append ( f"{{'error':'{e}'}}" )
+                log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error {e} during unpacking point #{i}' )
         l = len ( self.point_list )
         self.points_json = f"'num_points':{points_number},'points':["
         for i in range ( len ( self.point_list ) ) :
@@ -280,12 +277,10 @@ class PC3D :
 ####################### START PROGRAM ##########################
 ################################################################
 
-print ( hello )
-
 # Configure chirp 
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-#chirp_conf ()
+chirp_conf ()
 
 # Read data
 data_com.reset_output_buffer()
