@@ -13,7 +13,7 @@ import serial.tools.list_ports
 import struct
 import sys
 # sys.setdefaultencoding('utf-8')
-
+from serial_comm import set_serial_cfg , close_serial_comm
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
@@ -26,35 +26,10 @@ log_file_name           = 'log.txt'
 data_file_name          = 'data.txt'
 hvac_cfg_file_name      = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name      = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
+
 conf_com                = serial.Serial ()
 data_com                = serial.Serial ()
-serial_ports =  serial.tools.list_ports.comports()
-for s_p in serial_ports:
-    if 'CP2105'.lower () in s_p.description.lower () and 'Enhanced'.lower () in s_p.description.lower ():
-        if platform.system () == "Windows":
-            conf_com.port = s_p.name
-        elif platform.system () == "Linux":
-            conf_com.port = '/dev/' + s_p.name
-        else:
-            print ('Error: No compatible os!')
-    if 'CP2105'.lower () in s_p.description.lower () and 'Standard'.lower () in s_p.description.lower ():
-        if platform.system () == "Windows":
-            data_com.port = s_p.name
-        elif platform.system () == "Linux":
-            data_com.port = '/dev/' + s_p.name
-        else:
-            print ('Error: No compatible os!')
-conf_com.baudrate       = 115200
-data_com.baudrate       = 921600*1
-conf_com.bytesize       = serial.EIGHTBITS
-data_com.bytesize       = serial.EIGHTBITS
-conf_com.parity         = serial.PARITY_NONE
-data_com.parity         = serial.PARITY_NONE
-conf_com.stopbits       = serial.STOPBITS_ONE
-data_com.stopbits       = serial.STOPBITS_ONE
-conf_com.timeout        = 0.3
-data_com.timeout        = 0.025
-conf_com.write_timeout  = 1
+set_serial_cfg ( conf_com , data_com )
 
 data_com_delta_seconds = 2
 
@@ -290,7 +265,7 @@ class PC3D :
         try:
             sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( self.frame_header_struct , self.raw_data[:self.frame_header_length] )
             if sync == self.control :
-                self.frame_header_dict = { 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'frame_number' : frame_number , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'num_tlvs' : num_tlvs , 'checksum' : checksum }
+                self.frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum }
             else :
                 self.frame_header_dict = { 'error' : 'control != {sync}' }
         except struct.error as e :
@@ -328,12 +303,7 @@ while datetime.datetime.utcnow () < frame_read_time_up :
 ################################################################
 ##################### CLOSE DATA COM PORT ######################
 ################################################################
-try:
-    data_com.close ()
-except serial.SerialException as e :
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_com.name} port error closing: {str(e)}' )
-if not data_com.is_open :
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_com.name} port closed.' )
+close_serial_comm ( data_com , log_file ) 
 
 ################################################################
 ############# STOP SENSOR AND CLOSE CONF COM PORT ##############
@@ -347,15 +317,7 @@ if not data_com.is_open :
 # time.sleep ( 3 )
 # conf_com.reset_input_buffer ()
 # Close CONF COM Port
-if conf_com.is_open :
-    try:
-        conf_com.close ()
-        if not conf_com.is_open :
-            log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port closed.' )
-    except serial.SerialException as e:
-        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port error closing: {str(e)}' )
-else:
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port closed.' )
+close_serial_comm ( conf_com , log_file ) 
 
 ################################################################
 ################## CLOSE LOG AND DATA FILE #####################
