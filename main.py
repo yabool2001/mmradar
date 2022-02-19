@@ -84,29 +84,10 @@ else:
 #except IOError as e :
 #    logging.info ( f"{conf_file.name} file opening problem... {str(e)}" )
 
-################################################################
 ################ OPEN CONF AND DATA COM PORTS ##################
-################################################################
 open_serial_ports ( conf_com , data_com )
 
-################################################################
-##################### CHIRP CONFIGURATION ######################
-################################################################
-#def chirp_conf () :
-#    for line in chirp_cfg :
-#        time.sleep(.1)
-#        conf_com.write ( line.encode () )
-#        ack = conf_com.readline ()
-#        logging.info ( f"{conf_com.name} port ack: {ack}" )
-#        ack = conf_com.readline ()
-#        logging.info ( f"{conf_com.name} port ack: {ack}" )
-#        time.sleep ( 3 )
-#        conf_com.reset_input_buffer ()
-
-################################################################
 ####################### AZURE CONNECTION #######################
-################################################################
-# Version for IoT Hub connection
 #open_client = aih.open_azure ()
 
 class PC3D :
@@ -280,13 +261,13 @@ class PC3D :
 
 print ( hello )
 
-# Configure chirp 
+######################### CHIRP CONF ###########################
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
 #mmradar_conf ( chirp_conf_file_name , conf_com )
 mmradar_conf ( mmradar_start_conf_file_name , conf_com )
 
-# Read data
+######################### READ DATA ###########################
 data_com.reset_output_buffer()
 data_com.reset_input_buffer ()
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
