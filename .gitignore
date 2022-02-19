@@ -1,5 +1,6 @@
 # ignore all files with extension:
 *.log
+*.data
 
 # ignore all files in any directories:
 /__pycache__

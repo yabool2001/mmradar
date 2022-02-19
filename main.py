@@ -4,6 +4,7 @@
 from contextlib import nullcontext
 import datetime
 import json
+import logging
 from os import error, system
 import platform
 from pprint import pprint
@@ -13,51 +14,49 @@ import serial.tools.list_ports
 import struct
 import sys
 # sys.setdefaultencoding('utf-8')
-from serial_comm import set_serial_cfg , close_serial_comm
+from mmradar_ops import mmradar_conf
+from serial_comm import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
+
+
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
 
-global                  chirp_cfg
-global                  log_file , data_file
-global                  conf_com , data_com
-raws                    = bytes(1)
-log_file_name           = 'conf.log'
-data_file_name          = 'data.log'
-hvac_cfg_file_name      = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
-pc3d_cfg_file_name      = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
+raws                            = bytes(1)
+log_file_name                   = 'mmradar.log'
+data_file_name                  = 'mmradar.data'
+hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
+pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
+mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
+mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
+data_com_delta_seconds          = 2
+
+################################################################
+###################### LOGGING CONFIG ##########################
+################################################################
+
+LOG_FORMAT = '%(asctime)s;%(message)s;%(funcName)s;line:%(lineno)d;%(levelname)s'
+logging.basicConfig ( filename = log_file_name , level = logging.DEBUG , format = LOG_FORMAT )
+logging.info (f"\n")
+logging.info ( f"########## Hello mmradar app! ##########" )
+logging.info ( f"########## 'main.py' has started! ##########" )
+
+################################################################
+################ SERIALS COMM CONFiguration ####################
+################################################################
 
 conf_com                = serial.Serial ()
 data_com                = serial.Serial ()
-set_serial_cfg ( conf_com , data_com )
-
-data_com_delta_seconds = 2
+set_serials_cfg ( conf_com , data_com )
 
 # people_counting_mode: 'hvac' - Sense And Direct Hvac Control; 'pc3d' - 3d People Counting
 people_counting_mode = 'pc3d'
 
-hello = "\n\n#########################################\n########## serials3.py started ##########\n#########################################\n"
+hello = "\n\n#########################################\n########### main.py started ##########\n##########################################\n"
 
 ################################################################
 ############ OPEN LOG, DATA AND CHIRP CONF FILE ################
 ################################################################
-
-# Open log file
-try:
-    log_file = open ( log_file_name , 'a' , encoding='utf-8' )
-    if log_file.writable() :
-        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {hello}' )
-        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {log_file.name} file is writable.' )
-except IOError as e :
-    print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {log_file.name} file opening problem... {str(e)}' )
-
-# Open data file
-try:
-    data_file = open ( data_file_name , 'a' , encoding='utf-8' )
-    if data_file.writable() :
-        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file is writable.' )
-except IOError as e :
-    print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file opening problem... {str(e)}' )
 
 # Open Chirp configuration file and read configuration to chirp_cfg
 
@@ -71,51 +70,38 @@ except IOError as e :
 #        print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
 # na to 
 if people_counting_mode == 'pc3d':
-    conf_file_name = pc3d_cfg_file_name
+    chirp_conf_file_name = pc3d_cfg_file_name
 elif people_counting_mode == 'hvac':
-    conf_file_name = hvac_cfg_file_name
+    chirp_conf_file_name = hvac_cfg_file_name
 else:
-    print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
+    logging.info ( f"Error: no chirp cfg file!" )
 #  
-try:
-    with open ( f'{conf_file_name}' , 'r' , encoding='utf-8' ) as conf_file:
-        if conf_file.readable () :
-            log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_file.name} file is readable.' )
-        chirp_cfg = conf_file.readlines()
-except IOError as e :
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_file.name} file opening problem... {str(e)}' )
+#try:
+#    with open ( f'{conf_file_name}' , 'r' , encoding='utf-8' ) as conf_file:
+#        if conf_file.readable () :
+#            logging.info ( f"{conf_file.name} file is readable" )
+#        chirp_cfg = conf_file.readlines()
+#except IOError as e :
+#    logging.info ( f"{conf_file.name} file opening problem... {str(e)}" )
 
 ################################################################
 ################ OPEN CONF AND DATA COM PORTS ##################
 ################################################################
-
-# Open CONF COM port
-try: 
-    conf_com.open ()
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port opened.' )
-except serial.SerialException as e :
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port error opening: {str(e)}' )
-
-# Open DATA COM port
-try: 
-    data_com.open ()
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_com.name} port opened' )
-except serial.SerialException as e:
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_com.name} port error opening: {str(e)}' )
+open_serial_ports ( conf_com , data_com )
 
 ################################################################
 ##################### CHIRP CONFIGURATION ######################
 ################################################################
-def chirp_conf () :
-    for line in chirp_cfg :
-        time.sleep(.1)
-        conf_com.write ( line.encode () )
-        ack = conf_com.readline ()
-        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port ack: {ack}' )
-        ack = conf_com.readline ()
-        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port ack: {ack}' )
-        time.sleep ( 3 )
-        conf_com.reset_input_buffer ()
+#def chirp_conf () :
+#    for line in chirp_cfg :
+#        time.sleep(.1)
+#        conf_com.write ( line.encode () )
+#        ack = conf_com.readline ()
+#        logging.info ( f"{conf_com.name} port ack: {ack}" )
+#        ack = conf_com.readline ()
+#        logging.info ( f"{conf_com.name} port ack: {ack}" )
+#        time.sleep ( 3 )
+#        conf_com.reset_input_buffer ()
 
 ################################################################
 ####################### AZURE CONNECTION #######################
@@ -156,8 +142,20 @@ class PC3D :
         self.presence_indication_value = None
         self.presence_indication_json = None
 
-    def write_data ( self , file ) :
-        file.write ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}" )
+    def write_data ( self ) :
+        # Open data file
+        try:
+            data_file = open ( data_file_name , 'a' , encoding='utf-8' )
+        except IOError as e :
+            logging.info ( f"{data_file.name} file opening problem... {str(e)}" )
+        if data_file.writable() :
+            data_file.write ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}" )
+        
+        # Close data file
+        try:
+            data_file.close ()
+        except IOError as e :
+            logging.info ( f"{data_file.name} file closing problem... {str(e)}" )
         # Azure part
         #try :
         #    azure_client.send_message ( f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}" )
@@ -218,7 +216,7 @@ class PC3D :
             self.tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
         except struct.error as e :
             self.tlv_header_dict = { 'error' : {e} }
-            log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}" )
+            logging.info ( f"Error during frame unpack number: {self.frame_header_dict['frame_number']}" )
         self.tlv_header_json = f"'tlv_header':{self.tlv_header_dict}"
         if self.tlv_header_dict.get ( 'error' ) :
             return False
@@ -248,7 +246,7 @@ class PC3D :
     def get_tlvs ( self ) :
         for i in range ( self.frame_header_dict.get ( 'num_tlvs' ) ) : # get jest bezpieczne, bo w tym miejscu nie jest jeszcze pewny czy self.frame_header_dict['num_tlvs'] istnieje i mogłoby powodować błąd w programie
             if not self.get_tlv () :
-                log_file.write ( f"\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}" )
+                logging.info ( f" Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}" )
                 print ( f"Break 1 in function: {sys._getframe().f_code.co_name} with frame number: {self.frame_header_dict['frame_number']}" )
                 break
         l = len ( self.tlv_list )
@@ -285,7 +283,8 @@ print ( hello )
 # Configure chirp 
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-#chirp_conf ()
+#mmradar_conf ( chirp_conf_file_name , conf_com )
+mmradar_conf ( mmradar_start_conf_file_name , conf_com )
 
 # Read data
 data_com.reset_output_buffer()
@@ -297,48 +296,13 @@ while datetime.datetime.utcnow () < frame_read_time_up :
     if pc3d_object.get_frame_header () :
         pc3d_object.raw_data = pc3d_object.raw_data[pc3d_object.frame_header_length:]
         pc3d_object.get_tlvs ()
-    pc3d_object.write_data ( data_file )
+    pc3d_object.write_data ()
     del pc3d_object
+
+# Read data
+mmradar_conf ( mmradar_stop_conf_file_name , conf_com )
 
 ################################################################
 ##################### CLOSE DATA COM PORT ######################
 ################################################################
-close_serial_comm ( data_com , log_file ) 
-
-################################################################
-############# STOP SENSOR AND CLOSE CONF COM PORT ##############
-################################################################
-# Stop sensor (freez until know how to start it properly)
-# conf_com.write ( 'sensorStop\n'.encode () )
-# ack = conf_com.readline ()
-# log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port ack: {ack}' )
-# ack = conf_com.readline ()
-# log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {conf_com.name} port ack: {ack}' )
-# time.sleep ( 3 )
-# conf_com.reset_input_buffer ()
-# Close CONF COM Port
-close_serial_comm ( conf_com , log_file ) 
-
-################################################################
-################## CLOSE LOG AND DATA FILE #####################
-################################################################
-
-# Azure part
-
-
-# Close data file
-try:
-    data_file.close ()
-    if data_file.closed :
-        log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file is closed.' )
-except IOError as e :
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {data_file.name} file closing problem... {str(e)}' )
-# Close log file (must be at the end of the program)
-log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {log_file.name} file closing...' )
-try:
-    log_file.close ()
-    if log_file.closed :
-        print ( f'{log_file.name} file is closed.' )
-except IOError as e :
-    log_file.write ( f'\n{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} {log_file.name} file closing problem... {str(e)}' )
-    print ( f'{log_file.name} file closing problem... {str(e)}' )
+close_serial_ports ( conf_com , data_com ) 
