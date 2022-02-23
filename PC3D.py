@@ -1,5 +1,7 @@
 import logging
+import random
 import struct
+
 
 class PC3D :
     def __init__ ( self , raw_data ) :
@@ -33,6 +35,8 @@ class PC3D :
         self.presence_indication_length = struct.calcsize ( self.presence_indication_struct )
         self.presence_indication_value = None
         self.presence_indication_json = None
+        self.frame_json_2_azure = None
+        self.frame_json_2_file = None
 
     def send_data_2_azure ( self ) :
         pass
@@ -127,7 +131,7 @@ class PC3D :
     def get_tlvs ( self ) :
         for i in range ( self.frame_header_dict.get ( 'num_tlvs' ) ) : # get jest bezpieczne, bo w tym miejscu nie jest jeszcze pewny czy self.frame_header_dict['num_tlvs'] istnieje i mogłoby powodować błąd w programie
             if not self.get_tlv () :
-                logging.info ( f" Break 1 in function: with frame number: {self.frame_header_dict['frame_number']}" )
+                logging.info ( f"Break 1 in function: with frame number: {self.frame_header_dict['frame_number']}" )
                 break
         l = len ( self.tlv_list )
         self.tlvs_json = "'tlvs':["
@@ -158,4 +162,6 @@ class PC3D :
         if self.get_frame_header () :
             self.raw_data = self.raw_data[self.frame_header_length:]
             self.get_tlvs ()
-        return f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}"
+        self.frame_json_2_file = f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}"
+        #self.frame_json_2_azure = f"{{'frame':{{'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{self.presence_indication_value}}}"
+        self.frame_json_2_azure = f"{{'frame':{{'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{random.randint ( 0, 12 )}}}"
