@@ -90,7 +90,7 @@ class PC3D :
             self.presence_indication_json = f"'presence_indication':{self.presence_indication_value}"
             #print ( type(presence_indication) )
             #print ( type(self.presence_indication_value) )
-            print ( f"{self.presence_indication_value}" )
+            #print ( f"{self.presence_indication_value}" )
             return True
         except struct.error as e :
             self.presence_indication_json = f"{{'presence_indication':{{'error':'{e}'}}}}"

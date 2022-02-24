@@ -21,7 +21,8 @@ import PC3D
 ######################## DEFINITIONS ###########################
 ################################################################
 
-read_iteration                  = 1
+read_iteration                  = 10
+data_com_delta_seconds          = 1
 plsa                            = []
 plwf                            = []
 frame_json_2_file               = ''
@@ -33,7 +34,6 @@ hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
-data_com_delta_seconds          = 1
 
 ################################################################
 ###################### LOGGING CONFIG ##########################
@@ -143,15 +143,14 @@ for i in range ( read_iteration ) :
         #plsa.append ( p )
 
     print ( f"plsa: {len ( plsa )}" )
+    plsa_print = ''
     for j in plsa :
         if not j.is_alive () :
-            #print (f"plsa {j.name} is not alive")
-            print (f"frame: {j.name}")
             #plsa.remove ( j )
             #plsa.remove ( plsa.index ( j ) )
             del plsa[plsa.index ( j )]
-        else :
-            print (f"frame: {j.name}")
+        plsa_print += f"{j.name},"
+    print (f"{plsa_print}")
     #for j in plwf :
     #    print ( f"plwf c: {len ( plwf )}" )
     #    if not j.is_alive () :
