@@ -21,8 +21,11 @@ import PC3D
 ######################## DEFINITIONS ###########################
 ################################################################
 
+read_iteration                  = 1
 plsa                            = []
 plwf                            = []
+frame_json_2_file               = ''
+frame_json_2_azure              = ''
 raws                            = bytes(1)
 log_file_name                   = 'mmradar.log'
 data_file_name                  = 'mmradar.data'
@@ -30,7 +33,7 @@ hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
-data_com_delta_seconds          = 5
+data_com_delta_seconds          = 1
 
 ################################################################
 ###################### LOGGING CONFIG ##########################
@@ -111,43 +114,51 @@ conf_com.reset_output_buffer()
 data_com.reset_output_buffer()
 data_com.reset_input_buffer ()
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-while datetime.datetime.utcnow () < frame_read_time_up :
-    raw_data = data_com.read ( 4666 )
-    tsp = time.process_time_ns ()
-    pc3d_object = PC3D.PC3D ( raw_data )
-    pc3d_object.get_json_data ()
+for i in range ( read_iteration ) :
+    frame_json_2_azure = ''
+    frame_json_2_file = ''
+    while datetime.datetime.utcnow () < frame_read_time_up :
+        raw_data = data_com.read ( 4666 )
+        tsp = time.process_time_ns ()
+        pc3d_object = PC3D.PC3D ( raw_data )
+        pc3d_object.get_json_data ()
+        frame_json_2_file += pc3d_object.frame_json_2_file
+        frame_json_2_azure += pc3d_object.frame_json_2_azure
+        del pc3d_object
+        tp = ( time.process_time_ns () - tsp ) / 1000000
+        if tp > 1 :
+            logging.info ( f"WARNING: Frame {pc3d_object.frame_header_dict.get('frame_number')} process time [ms]: {tp}" )
+
+
     if __name__ == '__main__' :
-        p = Process ( target = write_data_2_local_file , args = ( pc3d_object.frame_json_2_file , data_file_name , ) , name = f"File-{pc3d_object.frame_header_dict.get('frame_number')}" )
+        p = Process ( target = write_data_2_local_file , args = ( frame_json_2_file , data_file_name , ) , name = f"File-{i}" )
         p.daemon = True
         p.start ()
         plwf.append ( p )
     if __name__ == '__main__' :
-        #p = Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"Azure-{pc3d_object.frame_header_dict.get('frame_number')}" )
-        plsa.append ( Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"{pc3d_object.frame_header_dict.get('frame_number')}" ) )
+        #p = Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"Azure-{i}" )
+        plsa.append ( Process ( target = send_2_azure_iothub , args = ( frame_json_2_azure , ) , name = f"{i}" ) )
         plsa[-1].daemon = True
         plsa[-1].start ()
         #plsa.append ( p )
-    tp = ( time.process_time_ns () - tsp ) / 1000000
-    if tp > 1 :
-        logging.info ( f"WARNING: Frame {pc3d_object.frame_header_dict.get('frame_number')} process time [ms]: {tp}" )
-    del pc3d_object
+
     print ( f"plsa: {len ( plsa )}" )
-    for i in plsa :
-        if not i.is_alive () :
-            #print (f"plsa {i.name} is not alive")
-            print (f"frame: {i.name}")
-            #plsa.remove ( i )
-            #plsa.remove ( plsa.index ( i ) )
-            del plsa[plsa.index ( i )]
+    for j in plsa :
+        if not j.is_alive () :
+            #print (f"plsa {j.name} is not alive")
+            print (f"frame: {j.name}")
+            #plsa.remove ( j )
+            #plsa.remove ( plsa.index ( j ) )
+            del plsa[plsa.index ( j )]
         else :
-            print (f"frame: {i.name}")
-    #for i in plwf :
+            print (f"frame: {j.name}")
+    #for j in plwf :
     #    print ( f"plwf c: {len ( plwf )}" )
-    #    if not i.is_alive () :
-    #        print (f"plwf {i} is not alive")
-    #        plwf.remove (i)
+    #    if not j.is_alive () :
+    #        print (f"plwf {j} is not alive")
+    #        plwf.remove (j)
     #    else :
-    #        print (f"plwf {i} is alive")
+    #        print (f"plwf {j} is alive")
 
 # Read data
 #mmradar_conf ( mmradar_stop_conf_file_name , conf_com )
