@@ -80,8 +80,8 @@ else:
 open_serial_ports ( conf_com , data_com )
 
 ####################### AZURE CONNECTION #######################
-#azure_connection_string = "HostName=mmradariothub.azure-devices.net;DeviceId=iwr6843;SharedAccessKey=k8yx5ft6yrSJ8Xsti3FViAuXWxDRtBMPbI5Hvr1DfI0=" # wersja dla konta mzemlo.pl@gmail.com
-azure_connection_string = "HostName=mmradar.azure-devices.net;DeviceId=iwr6843isk001;SharedAccessKey=ujS/p+N9cUhUw//fhQW6tbomVxcPajR2vkUjfwRqCsY=" # wersja dla konta mzemlo@netemera.comb
+azure_connection_string = "HostName=mmradariothub.azure-devices.net;DeviceId=iwr6843;SharedAccessKey=k8yx5ft6yrSJ8Xsti3FViAuXWxDRtBMPbI5Hvr1DfI0=" # wersja dla konta mzemlo.pl@gmail.com
+#azure_connection_string = "HostName=mmradar.azure-devices.net;DeviceId=iwr6843isk001;SharedAccessKey=ujS/p+N9cUhUw//fhQW6tbomVxcPajR2vkUjfwRqCsY=" # wersja dla konta mzemlo@netemera.comb
 azure_client = IoTHubDeviceClient.create_from_connection_string ( azure_connection_string )
 azure_client.connect ()
 def send_2_azure_iothub ( s ) :
