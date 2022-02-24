@@ -85,11 +85,12 @@ azure_connection_string = "HostName=mmradar.azure-devices.net;DeviceId=iwr6843is
 azure_client = IoTHubDeviceClient.create_from_connection_string ( azure_connection_string )
 azure_client.connect ()
 def send_2_azure_iothub ( s ) :
-    try :
-        azure_client.send_message ( f'{s}' )
-        logging.info ( "Azure message sent")
-    except :
-        logging.info ( "Azure error sending message!")
+    if azure_client.connected :
+        try :
+            azure_client.send_message ( f'{s}' )
+            logging.info ( "Azure message sent")
+        except :
+            logging.info ( "Azure error sending message!")
 
 ################################################################
 ####################### START PROGRAM ##########################
@@ -100,7 +101,7 @@ print ( hello )
 ##################### CHIRP CONF ################################
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-mmradar_conf ( chirp_conf_file_name , conf_com )
+#mmradar_conf ( chirp_conf_file_name , conf_com )
 #mmradar_conf ( mmradar_start_conf_file_name , conf_com )
 
 ##################### READ DATA #################################
