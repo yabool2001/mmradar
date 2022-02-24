@@ -21,7 +21,8 @@ import PC3D
 ######################## DEFINITIONS ###########################
 ################################################################
 
-p_list                          = []
+plsa                            = []
+plwf                            = []
 raws                            = bytes(1)
 log_file_name                   = 'mmradar.log'
 data_file_name                  = 'mmradar.data'
@@ -29,7 +30,7 @@ hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
-data_com_delta_seconds          = 0.2
+data_com_delta_seconds          = 5
 
 ################################################################
 ###################### LOGGING CONFIG ##########################
@@ -85,7 +86,9 @@ azure_connection_string = "HostName=mmradariothub.azure-devices.net;DeviceId=iwr
 azure_client = IoTHubDeviceClient.create_from_connection_string ( azure_connection_string )
 azure_client.connect ()
 def send_2_azure_iothub ( s ) :
-    if azure_client.connected :
+    if not azure_client.connected :
+        azure_client.connect ()
+    else :
         try :
             azure_client.send_message ( f'{s}' )
             logging.info ( "Azure message sent")
@@ -117,14 +120,34 @@ while datetime.datetime.utcnow () < frame_read_time_up :
         p = Process ( target = write_data_2_local_file , args = ( pc3d_object.frame_json_2_file , data_file_name , ) , name = f"File-{pc3d_object.frame_header_dict.get('frame_number')}" )
         p.daemon = True
         p.start ()
+        plwf.append ( p )
     if __name__ == '__main__' :
-        p = Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"Azure-{pc3d_object.frame_header_dict.get('frame_number')}" )
-        p.daemon = True
-        p.start ()
+        #p = Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"Azure-{pc3d_object.frame_header_dict.get('frame_number')}" )
+        plsa.append ( Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"{pc3d_object.frame_header_dict.get('frame_number')}" ) )
+        plsa[-1].daemon = True
+        plsa[-1].start ()
+        #plsa.append ( p )
     tp = ( time.process_time_ns () - tsp ) / 1000000
     if tp > 1 :
         logging.info ( f"WARNING: Frame {pc3d_object.frame_header_dict.get('frame_number')} process time [ms]: {tp}" )
     del pc3d_object
+    print ( f"plsa: {len ( plsa )}" )
+    for i in plsa :
+        if not i.is_alive () :
+            #print (f"plsa {i.name} is not alive")
+            print (f"frame: {i.name}")
+            #plsa.remove ( i )
+            #plsa.remove ( plsa.index ( i ) )
+            del plsa[plsa.index ( i )]
+        else :
+            print (f"frame: {i.name}")
+    #for i in plwf :
+    #    print ( f"plwf c: {len ( plwf )}" )
+    #    if not i.is_alive () :
+    #        print (f"plwf {i} is not alive")
+    #        plwf.remove (i)
+    #    else :
+    #        print (f"plwf {i} is alive")
 
 # Read data
 #mmradar_conf ( mmradar_stop_conf_file_name , conf_com )
@@ -134,4 +157,5 @@ while datetime.datetime.utcnow () < frame_read_time_up :
 close_serial_ports ( conf_com , data_com )
 
 ##################### CLOSE AZURE ##############################
-azure_client.shutdown()
+#azure_client.disconnect ()
+azure_client.shutdown ()

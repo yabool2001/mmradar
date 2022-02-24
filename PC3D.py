@@ -1,3 +1,4 @@
+import datetime
 import logging
 import random
 import struct
@@ -163,5 +164,5 @@ class PC3D :
             self.raw_data = self.raw_data[self.frame_header_length:]
             self.get_tlvs ()
         self.frame_json_2_file = f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}"
-        #self.frame_json_2_azure = f"{{'frame':{{'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{self.presence_indication_value}}}"
-        self.frame_json_2_azure = f"{{'frame':{{'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{random.randint ( 0, 12 )}}}"
+        self.frame_json_2_azure = f"{{'id' : {datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S%f')},'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{self.presence_indication_value}}}"
+        #self.frame_json_2_azure = f"{{'frame':{{'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{random.randint ( 0, 12 )}}}"
