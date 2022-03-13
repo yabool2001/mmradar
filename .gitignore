@@ -4,3 +4,5 @@
 
 # ignore all files in any directories:
 /__pycache__
+azure/__pycache__/__init__.cpython-310.pyc
+azure/iot/__pycache__/__init__.cpython-310.pyc
