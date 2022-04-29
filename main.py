@@ -31,7 +31,7 @@ raws                            = bytes(1)
 log_file_name                   = 'mmradar.log'
 data_file_name                  = 'mmradar.data'
 hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
-pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mzo-v.1.cfg'
+pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
 
