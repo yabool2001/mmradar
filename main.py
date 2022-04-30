@@ -107,7 +107,7 @@ print ( hello )
 ##################### CHIRP CONF ################################
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-mmradar_conf ( chirp_conf_file_name , conf_com )
+#mmradar_conf ( chirp_conf_file_name , conf_com )
 #mmradar_conf ( mmradar_start_conf_file_name , conf_com )
 
 ##################### READ DATA #################################

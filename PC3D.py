@@ -102,7 +102,7 @@ class PC3D :
             self.tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
         except struct.error as e :
             self.tlv_header_dict = { 'error' : {e} }
-            logging.info ( f"Error during frame unpack number: {self.frame_header_dict['frame_number']}" )
+            logging.info ( f"TLV Header unpack error during frame unpack number: {self.frame_header_dict['frame_number']}" )
         self.tlv_header_json = f"'tlv_header':{self.tlv_header_dict}"
         if self.tlv_header_dict.get ( 'error' ) :
             return False
