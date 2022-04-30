@@ -26,12 +26,18 @@ class PC3D :
         self.pointcloud_unit_length = struct.calcsize ( self.pointcloud_unit_struct )
         self.point_struct = '2B2h'
         self.point_length = struct.calcsize ( self.point_struct )
-        self.point_list = []
+        self.points_list = []
         self.points_json = None
         self.pointcloud_unit_dict = dict ()
         self.pointcloud_unit_json = None
-        self.target_list_struct = 'I27f'
-        self.target_list_length = struct.calcsize ( self.target_list_struct )
+        self.target_struct = 'I27f'
+        self.target_part1_struct = 'I9f'
+        self.target_part2_struct = '16f'
+        self.target_part3_struct = '2f'
+        self.target_length = struct.calcsize ( self.target_struct )
+        self.target_part1_length = struct.calcsize ( self.target_part1_struct )
+        self.target_part2_length = struct.calcsize ( self.target_part2_struct )
+        self.target_part3_length = struct.calcsize ( self.target_part3_struct )
         self.presence_indication_struct = '1I'
         self.presence_indication_length = struct.calcsize ( self.presence_indication_struct )
         self.presence_indication_value = None
@@ -51,24 +57,40 @@ class PC3D :
     # Zapisanie punktów do dict, zapisanie słownika do pliku i skasowanie słownika
     # Usunięcie Punktu z ramki w każdej iteracji
 
-    def get_points ( self , tlv_length ) :
+    def get_targets_list ( self , tlv_length ) :
+        targets_number = int ( ( tlv_length - self.tlv_header_length ) / self.target_length )
+        print ( targets_number )
+        for i in range ( targets_number ) :
+            try :
+                target_id , target_pos_x , target_pos_y , target_pos_z , target_vel_x , target_vel_y , target_vel_z , target_acc_x , target_acc_y , target_acc_z = struct.unpack ( self.target_part1_struct , self.raw_data[(self.tlv_header_length) + ( i * self.target_length ):][:self.target_part1_length] )
+                
+                # Zostawiam err_covariance[16] na później
+                err_covariance = struct.unpack ( self.target_part2_struct , self.raw_data[(self.tlv_header_length) + ( i * self.target_length ) + self.target_part1_length:][:self.target_part2_length] )
+                gain , confidence_level = struct.unpack ( self.target_part3_struct , self.raw_data[(self.tlv_header_length) + ( i * self.target_length ) + self.target_part1_length + self.target_part2_length:][:self.target_part3_length] )
+                # Zapisz punkt
+                if target_id :
+                    self.targets_list.append ( f"{{'target_id':{target_id},'target_pos_x':{target_pos_x}, 'target_pos_y':{target_pos_y},'target_pos_z':{target_pos_z},'target_vel_x':{target_vel_x}, 'target_vel_y':{target_vel_y},'target_vel_z':{target_vel_z},'target_acc_x':{target_acc_x},'target_acc_y':{target_acc_y},'target_acc_z':{target_acc_z},'err_covariance':{err_covariance},'gain':{gain},'confidence_level':{confidence_level}}}" )
+            except struct.error as e :
+                self.points_list.append ( f"{{'error':'{e}'}}" )
+
+    def get_points_list ( self , tlv_length ) :
         points_number = int ( ( tlv_length - self.tlv_header_length - self.pointcloud_unit_length ) / self.point_length )
         for i in range ( points_number ) :
             try :
-                azimuth_point , doppler_point , range_point , snr_point = struct.unpack (self. point_struct , self.raw_data[(self.tlv_header_length + self.pointcloud_unit_length ) + ( i * self.point_length ):][:self.point_length] )
+                azimuth_point , doppler_point , range_point , snr_point = struct.unpack ( self.point_struct , self.raw_data[(self.tlv_header_length + self.pointcloud_unit_length ) + ( i * self.point_length ):][:self.point_length] )
                 # Zapisz punkt
                 if doppler_point :
-                    self.point_list.append ( f"{{'azimuth_point':{azimuth_point},'doppler_point':{doppler_point}, 'range_point':{range_point},'snr_point':{snr_point}}}" )
+                    self.points_list.append ( f"{{'azimuth_point':{azimuth_point},'doppler_point':{doppler_point}, 'range_point':{range_point},'snr_point':{snr_point}}}" )
             except struct.error as e :
-                self.point_list.append ( f"{{'error':'{e}'}}" )
-        l = len ( self.point_list )
+                self.points_list.append ( f"{{'error':'{e}'}}" )
+        l = len ( self.points_list )
         self.points_json = f"'num_points':{points_number},'points':["
-        for i in range ( len ( self.point_list ) ) :
-            self.points_json += str ( self.point_list[i] ) #self.points_json = self.points_json + str ( self.point_list[i] )
+        for i in range ( len ( self.points_list ) ) :
+            self.points_json += str ( self.points_list[i] ) #self.points_json = self.points_json + str ( self.points_list[i] )
             if i < ( l - 1 ) :
                 self.points_json = self.points_json + ","
         self.points_json = self.points_json + "]"
-        self.point_list.clear ()
+        self.points_list.clear ()
 
     def get_pointcloud2d_unit ( self ) :
         try :
@@ -112,12 +134,17 @@ class PC3D :
     def get_tlv ( self ) :
         if self.get_tlv_header () :
             if self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_pointcloud_2d :
-                    if self.get_pointcloud2d_unit () : 
-                        self.get_points ( self.tlv_header_dict['tlv_length'] )
-                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit_json},{self.points_json}}}}}" )
-                    else : # tutaj coś jest nie tak, bo jesli jest False to czemu wstawiam to unit? jeśli chodzi o point to trzeba to poprawić
-                        self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit_json}}}}}" )
-            elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_list or self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_index :
+                if self.get_pointcloud2d_unit () : 
+                    self.get_points_list ( self.tlv_header_dict['tlv_length'] )
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit_json},{self.points_json}}}}}" )
+                else : # tutaj coś jest nie tak, bo jesli jest False to czemu wstawiam to unit? jeśli chodzi o point to trzeba to poprawić
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit_json}}}}}" )
+            elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_list :
+                if self.get_targets_list ( self.tlv_header_dict['tlv_length'] ) :
+                    pass
+                else :
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
+            elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_index :
                 self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
             elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_presence_indication :
                 if self.get_presence_indication () :
