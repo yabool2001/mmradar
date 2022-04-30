@@ -38,6 +38,8 @@ class PC3D :
         self.target_part1_length = struct.calcsize ( self.target_part1_struct )
         self.target_part2_length = struct.calcsize ( self.target_part2_struct )
         self.target_part3_length = struct.calcsize ( self.target_part3_struct )
+        self.targets_list = []
+        self.targets_json = None
         self.presence_indication_struct = '1I'
         self.presence_indication_length = struct.calcsize ( self.presence_indication_struct )
         self.presence_indication_value = None
@@ -59,11 +61,10 @@ class PC3D :
 
     def get_targets_list ( self , tlv_length ) :
         targets_number = int ( ( tlv_length - self.tlv_header_length ) / self.target_length )
-        print ( targets_number )
+        print ( "targets_number = " + targets_number )
         for i in range ( targets_number ) :
             try :
                 target_id , target_pos_x , target_pos_y , target_pos_z , target_vel_x , target_vel_y , target_vel_z , target_acc_x , target_acc_y , target_acc_z = struct.unpack ( self.target_part1_struct , self.raw_data[(self.tlv_header_length) + ( i * self.target_length ):][:self.target_part1_length] )
-                
                 # Zostawiam err_covariance[16] na później
                 err_covariance = struct.unpack ( self.target_part2_struct , self.raw_data[(self.tlv_header_length) + ( i * self.target_length ) + self.target_part1_length:][:self.target_part2_length] )
                 gain , confidence_level = struct.unpack ( self.target_part3_struct , self.raw_data[(self.tlv_header_length) + ( i * self.target_length ) + self.target_part1_length + self.target_part2_length:][:self.target_part3_length] )
@@ -71,7 +72,19 @@ class PC3D :
                 if target_id :
                     self.targets_list.append ( f"{{'target_id':{target_id},'target_pos_x':{target_pos_x}, 'target_pos_y':{target_pos_y},'target_pos_z':{target_pos_z},'target_vel_x':{target_vel_x}, 'target_vel_y':{target_vel_y},'target_vel_z':{target_vel_z},'target_acc_x':{target_acc_x},'target_acc_y':{target_acc_y},'target_acc_z':{target_acc_z},'err_covariance':{err_covariance},'gain':{gain},'confidence_level':{confidence_level}}}" )
             except struct.error as e :
-                self.points_list.append ( f"{{'error':'{e}'}}" )
+                self.targets_list.append ( f"{{'error':'{e}'}}" )
+        l = len ( self.targets_list )
+        self.targets_json = f"'num_targets':{targets_number},'targets':["
+        for i in range ( l ) :
+            self.targets_json += str ( self.targets_list[i] ) #self.targets_json = self.targets_json + str ( self.targets_list[i] )
+            if i < ( l - 1 ) :
+                self.targets_json = self.targets_json + ","
+        self.targets_json = self.targets_json + "]"
+        self.targets_list.clear ()
+        if self.targets_dict.get ( 'error' ) :
+            return False
+        else:
+            return True
 
     def get_points_list ( self , tlv_length ) :
         points_number = int ( ( tlv_length - self.tlv_header_length - self.pointcloud_unit_length ) / self.point_length )
@@ -141,7 +154,7 @@ class PC3D :
                     self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.pointcloud_unit_json}}}}}" )
             elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_list :
                 if self.get_targets_list ( self.tlv_header_dict['tlv_length'] ) :
-                    pass
+                    self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json},{self.targets_json}}}}}" )
                 else :
                     self.tlv_list.append ( f"{{tlv:{{{self.tlv_header_json}}}}}" )
             elif self.tlv_header_dict.get ( 'tlv_type' ) == self.tlv_type_target_index :

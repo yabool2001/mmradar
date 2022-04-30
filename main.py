@@ -22,7 +22,7 @@ import PC3D
 ################################################################
 
 read_iteration                  = 10
-data_com_delta_seconds          = 1
+data_com_delta_seconds          = 10
 plsa                            = []
 plwf                            = []
 frame_json_2_file               = ''
