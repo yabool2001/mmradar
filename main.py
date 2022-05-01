@@ -21,7 +21,8 @@ import PC3D
 ######################## DEFINITIONS ###########################
 ################################################################
 
-read_iteration                  = 10
+chirp_conf                      = 1
+read_iteration                  = 3
 data_com_delta_seconds          = 10
 plsa                            = []
 plwf                            = []
@@ -67,9 +68,9 @@ hello = "\n\n##########################################\n############# mmradar s
 # Jak będę miał na raspberry pi python wersja 3.10 to zastąpić to
 #match people_counting_mode:
 #    case 'pc3d':
-#        conf_file_name = pc3d_cfg_file_name
+#        chirp_conf_file_name = pc3d_cfg_file_name
 #    case 'hvac':
-#        conf_file_name = hvac_cfg_file_name
+#        chirp_conf_file_name = hvac_cfg_file_name
 #    case _:
 #        print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
 # na to 
@@ -107,16 +108,19 @@ print ( hello )
 ##################### CHIRP CONF ################################
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-mmradar_conf ( chirp_conf_file_name , conf_com )
-#mmradar_conf ( mmradar_start_conf_file_name , conf_com )
+if chirp_conf :
+    if chirp_conf == 1 :
+        mmradar_conf ( mmradar_start_conf_file_name , conf_com )
+    if chirp_conf == 2 :
+        mmradar_conf ( chirp_conf_file_name , conf_com )
 
 ##################### READ DATA #################################
 data_com.reset_output_buffer()
 data_com.reset_input_buffer ()
-frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 for i in range ( read_iteration ) :
     frame_json_2_azure = ''
     frame_json_2_file = ''
+    frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
     while datetime.datetime.utcnow () < frame_read_time_up :
         raw_data = data_com.read ( 4666 )
         tsp = time.process_time_ns ()
@@ -127,7 +131,8 @@ for i in range ( read_iteration ) :
         del pc3d_object
         tp = ( time.process_time_ns () - tsp ) / 1000000
         if tp > 1 :
-            logging.info ( f"WARNING: Frame {pc3d_object.frame_header_dict.get('frame_number')} process time [ms]: {tp}" )
+            logging.info ( f"WARNING: Process time [ms]: {tp}" )
+            # logging.info ( f"WARNING: Frame {pc3d_object.frame_header_dict.get('frame_number')} process time [ms]: {tp}" )
 
 
     if __name__ == '__main__' :
