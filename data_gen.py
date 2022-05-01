@@ -24,8 +24,8 @@ import PC3D
 
 people_counting_mode            = 'pc3d'
 control                         = 506660481457717506
-chirp_conf                      = 2
-data_com_delta_seconds          = 0.2
+chirp_conf                      = 0
+data_com_delta_seconds          = 20
 raws                            = bytes(1)
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 raw_data_file_name              = 'mmradar_gen.raw_data'
@@ -41,7 +41,7 @@ frame_header_json = None
 tlv_header_struct = '2I'
 tlv_header_length = struct.calcsize ( tlv_header_struct )
 tlv_header_dict = dict ()
-tlv_header_json = None
+tlv_header_json = ""
 
 
 ################################################################
@@ -92,7 +92,9 @@ frame_json_2_azure = ''
 frame_json_2_file = ''
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 while datetime.datetime.utcnow () < frame_read_time_up :
+    print ( datetime.datetime.utcnow ().second )
     raw_data = data_com.read ( 4666 )
+    tlv_header_json = ""
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , raw_data[:frame_header_length] )
         if sync == control :
@@ -103,13 +105,18 @@ while datetime.datetime.utcnow () < frame_read_time_up :
         frame_header_dict = { 'error' : {e} }
     frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
     with open ( raw_data_file_name , 'a' , encoding='utf-8' ) as f :
-                f.write ( f'{raw_data}\n' )
-    with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
-                f.write ( frame_header_json + '\n\n' )
+        f.write ( f'{raw_data}\n' )
     if not frame_header_dict.get ( 'error' ) :
         raw_data = raw_data[frame_header_length:]
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
-            logging.info ( f"Break 1 in function: with frame number: {self.frame_header_dict['frame_number']}" )
+            try:
+                tlv_type, tlv_length = struct.unpack ( tlv_header_struct , raw_data[:tlv_header_length] )
+                tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
+            except struct.error as e :
+                tlv_header_dict = { 'error' : {e} }
+            tlv_header_json += f"'tlv_header':{tlv_header_dict}"
+        with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
+            f.write ( frame_header_json + tlv_header_json + '\n' )
 
 
 ##################### CLOSE DATA COM PORT ######################
