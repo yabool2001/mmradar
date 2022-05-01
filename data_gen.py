@@ -25,7 +25,7 @@ import PC3D
 people_counting_mode            = 'pc3d'
 control                         = 506660481457717506
 chirp_conf                      = 0
-data_com_delta_seconds          = 20
+data_com_delta_seconds          = 60
 raws                            = bytes(1)
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 raw_data_file_name              = 'mmradar_gen.raw_data'
@@ -92,7 +92,7 @@ frame_json_2_azure = ''
 frame_json_2_file = ''
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 while datetime.datetime.utcnow () < frame_read_time_up :
-    print ( datetime.datetime.utcnow ().second )
+    # print ( datetime.datetime.utcnow ().second )
     raw_data = data_com.read ( 4666 )
     tlv_header_json = ""
     try:
@@ -110,11 +110,14 @@ while datetime.datetime.utcnow () < frame_read_time_up :
         raw_data = raw_data[frame_header_length:]
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
             try:
-                tlv_type, tlv_length = struct.unpack ( tlv_header_struct , raw_data[:tlv_header_length] )
+                tlv_type, tlv_length = struct.unpack ( tlv_header_struct , raw_data[:tlv_header_length * i] )
                 tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
+                if tlv_type == 7 or tlv_type == 8 :
+                    print ( tlv_type )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
             tlv_header_json += f"'tlv_header':{tlv_header_dict}"
+            #raw_data = raw_data[tlv_header_length:]
         with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
             f.write ( frame_header_json + tlv_header_json + '\n' )
 

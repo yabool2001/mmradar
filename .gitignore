@@ -5,5 +5,3 @@
 # ignore all files in any directories:
 /__pycache__
 azure/__pycache__
-mmradar_gen.parsed_data
-mmradar_gen.raw_data
