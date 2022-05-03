@@ -99,20 +99,20 @@ while datetime.datetime.utcnow () < frame_read_time_up :
     except struct.error as e :
         frame_header_dict = { 'error' : {e} }
     frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
-    with open ( raw_data_file_name , 'a' , encoding='utf-8' ) as f :
-        f.write ( f'{raw_data}\n' )
     if not frame_header_dict.get ( 'error' ) :
         raw_data = raw_data[frame_header_length:]
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
             try:
-                tlv_type, tlv_length = struct.unpack ( tlv_header_struct , raw_data[:tlv_header_length * i] )
+                tlv_type, tlv_length = struct.unpack ( tlv_header_struct , raw_data[:tlv_header_length] )
                 tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
                 if tlv_type == 7 or tlv_type == 8 :
                     print ( tlv_type )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
             tlv_header_json += f"'tlv_header':{tlv_header_dict}"
-            #raw_data = raw_data[tlv_header_length:]
+            raw_data = raw_data[tlv_length:]
+        with open ( raw_data_file_name , 'a' , encoding='utf-8' ) as f :
+            f.write ( f'{raw_data}\n' )
         with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
             f.write ( frame_header_json + tlv_header_json + '\n' )
 
