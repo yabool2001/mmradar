@@ -24,6 +24,8 @@ control                         = 506660481457717506
 chirp_conf                      = 0
 data_com_delta_seconds          = 60
 raws                            = bytes(1)
+frame                           = bytes(1)
+saved_raw_data_file_name        = 'mmradar_gen.raw_data02'
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 raw_data_file_name              = 'mmradar_gen.raw_data'
 hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
@@ -69,31 +71,17 @@ match people_counting_mode:
 
 print ( hello )
 
-################ OPEN CONF AND DATA COM PORTS ##################
-set_serials_cfg ( conf_com , data_com )
-open_serial_ports ( conf_com , data_com )
+################ OPEN FILE WITH SAVED RAW DATA #################
+saved_raw_data_file = open ( saved_raw_data_file_name , 'r' )
 
-################ CHIRP CONF ####################################
-conf_com.reset_input_buffer()
-conf_com.reset_output_buffer()
-if chirp_conf :
-    if chirp_conf == 1 :
-        mmradar_conf ( mmradar_start_conf_file_name , conf_com )
-    if chirp_conf == 2 :
-        mmradar_conf ( chirp_conf_file_name , conf_com )
-
-##################### READ DATA #################################
-data_com.reset_output_buffer()
-data_com.reset_input_buffer ()
 frame_json_2_azure = ''
 frame_json_2_file = ''
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-while datetime.datetime.utcnow () < frame_read_time_up :
-    # print ( datetime.datetime.utcnow ().second )
-    raw_data = data_com.read ( 4666 )
+for saved_raw_frame in saved_raw_data_file :
+    saved_raw_frame_c = bytes ( saved_raw_frame , 'utf-8' )
     tlv_header_json = ""
     try:
-        sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , raw_data[:frame_header_length] )
+        sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
         if sync == control :
             # frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum }
             frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'total_packet_length' : total_packet_length }
@@ -103,24 +91,19 @@ while datetime.datetime.utcnow () < frame_read_time_up :
         frame_header_dict = { 'error' : {e} }
     frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
     if not frame_header_dict.get ( 'error' ) :
-        raw_data_s = raw_data.decode("utf-8") # need to test it and encode in reader
         with open ( raw_data_file_name , 'a' , encoding='utf-8' ) as f :
-            f.write ( f'{raw_data_s}\n' )
-        raw_data = raw_data[frame_header_length:]
+            f.write ( f'{frame}\n' )
+        frame = frame[frame_header_length:]
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
             try:
-                tlv_type, tlv_length = struct.unpack ( tlv_header_struct , raw_data[:tlv_header_length] )
+                tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
                 tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
                 if tlv_type == 7 or tlv_type == 8 :
                     print ( tlv_type )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
             tlv_header_json += f"'tlv_header':{tlv_header_dict}"
-            raw_data = raw_data[tlv_length:]
+            frame = frame[tlv_length:]
         with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
             f.write ( frame_header_json + tlv_header_json + '\n' )
-
-
-##################### CLOSE DATA COM PORT ######################
-close_serial_ports ( conf_com , data_com )
 
