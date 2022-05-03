@@ -1,10 +1,6 @@
 # Wdrożyć checksum bo nie wiem skąd się biorą błędy w ramkach tlv
 
-#import azure_iot_hub_mzemlopl as aih
-from azure.iot.device import IoTHubDeviceClient
-#from contextlib import nullcontext
 import datetime
-import logging
 import multiprocessing
 from multiprocessing.dummy import Process
 import time
@@ -15,7 +11,6 @@ import struct
 from mmradar_ops import mmradar_conf
 from serial_ops import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
 from file_ops import write_data_2_local_file
-import PC3D
 
 
 ################################################################
