@@ -22,12 +22,13 @@ from file_ops import write_data_2_local_file
 people_counting_mode            = 'pc3d'
 control                         = 506660481457717506
 chirp_conf                      = 0
-data_com_delta_seconds          = 60
+data_com_delta_seconds          = 0.2
 raws                            = bytes(1)
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 raw_data_file_name              = 'mmradar_gen.raw_data'
+raw_data_bin_file_name          = 'mmradar_gen.bin_raw_data'
 hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
-pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
+pc3d_aop_cfg_file_name          = 'chirp_cfg/AOP_6m_default.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
 
@@ -56,7 +57,7 @@ hello = "\n\n##########################################\n############# mmradar s
 ################################################################
 match people_counting_mode:
     case 'pc3d':
-        chirp_conf_file_name = pc3d_cfg_file_name
+        chirp_conf_file_name = pc3d_aop_cfg_file_name
     case 'hvac':
         chirp_conf_file_name = hvac_cfg_file_name
     case _:
@@ -76,11 +77,7 @@ open_serial_ports ( conf_com , data_com )
 ################ CHIRP CONF ####################################
 conf_com.reset_input_buffer()
 conf_com.reset_output_buffer()
-if chirp_conf :
-    if chirp_conf == 1 :
-        mmradar_conf ( mmradar_start_conf_file_name , conf_com )
-    if chirp_conf == 2 :
-        mmradar_conf ( chirp_conf_file_name , conf_com )
+mmradar_conf ( chirp_conf_file_name , conf_com )
 
 ##################### READ DATA #################################
 data_com.reset_output_buffer()
@@ -103,9 +100,9 @@ while datetime.datetime.utcnow () < frame_read_time_up :
         frame_header_dict = { 'error' : {e} }
     frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
     if not frame_header_dict.get ( 'error' ) :
-        raw_data_s = raw_data.decode("utf-8") # need to test it and encode in reader
-        with open ( raw_data_file_name , 'a' , encoding='utf-8' ) as f :
-            f.write ( f'{raw_data_s}\n' )
+        #raw_data_s = raw_data.decode("utf-8") # need to test it and encode in reader
+        with open ( raw_data_bin_file_name , 'ab' ) as f :
+            f.write ( f'{raw_data}\n' )
         raw_data = raw_data[frame_header_length:]
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
             try:
