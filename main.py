@@ -21,6 +21,7 @@ import PC3D
 ######################## DEFINITIONS ###########################
 ################################################################
 
+real_data                       = 0
 chirp_conf                      = 1
 read_iteration                  = 3
 data_com_delta_seconds          = 10
@@ -31,6 +32,7 @@ frame_json_2_azure              = ''
 raws                            = bytes(1)
 log_file_name                   = 'mmradar.log'
 data_file_name                  = 'mmradar.data'
+saved_data_file_name            = 'mmradar_gen_good.bin_raw_data'
 hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
@@ -50,9 +52,10 @@ logging.info ( f"########## 'main.py' has started! ##########" )
 ################ SERIALS COMM CONFiguration ####################
 ################################################################
 
-conf_com                = serial.Serial ()
-data_com                = serial.Serial ()
-set_serials_cfg ( conf_com , data_com )
+if real_data :
+    conf_com = serial.Serial ()
+    data_com = serial.Serial ()
+    set_serials_cfg ( conf_com , data_com )
 
 # people_counting_mode: 'hvac' - Sense And Direct Hvac Control; 'pc3d' - 3d People Counting
 people_counting_mode = 'pc3d'
@@ -82,7 +85,8 @@ else:
     logging.info ( f"Error: no chirp cfg file!" )
 
 ################ OPEN CONF AND DATA COM PORTS ##################
-open_serial_ports ( conf_com , data_com )
+if real_data :
+    open_serial_ports ( conf_com , data_com )
 
 ####################### AZURE CONNECTION #######################
 azure_connection_string = "HostName=mmradariothub.azure-devices.net;DeviceId=iwr6843;SharedAccessKey=k8yx5ft6yrSJ8Xsti3FViAuXWxDRtBMPbI5Hvr1DfI0=" # wersja dla konta mzemlo.pl@gmail.com
@@ -106,25 +110,34 @@ def send_2_azure_iothub ( s ) :
 print ( hello )
 
 ##################### CHIRP CONF ################################
-conf_com.reset_input_buffer()
-conf_com.reset_output_buffer()
-if chirp_conf :
-    if chirp_conf == 1 :
-        mmradar_conf ( mmradar_start_conf_file_name , conf_com )
-    if chirp_conf == 2 :
-        mmradar_conf ( chirp_conf_file_name , conf_com )
+if real_data :
+    conf_com.reset_input_buffer()
+    conf_com.reset_output_buffer()
+    if chirp_conf :
+        if chirp_conf == 1 :
+            mmradar_conf ( mmradar_start_conf_file_name , conf_com )
+        if chirp_conf == 2 :
+            mmradar_conf ( chirp_conf_file_name , conf_com )
 
 ##################### READ DATA #################################
-data_com.reset_output_buffer()
-data_com.reset_input_buffer ()
+if real_data :
+    data_com.reset_output_buffer()
+    data_com.reset_input_buffer ()
+else :
+    saved_raw_frames = open ( saved_data_file_name , 'r' ) .readlines ()
 for i in range ( read_iteration ) :
     frame_json_2_azure = ''
     frame_json_2_file = ''
     frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
+    j = 0
     while datetime.datetime.utcnow () < frame_read_time_up :
-        raw_data = data_com.read ( 4666 )
+        if real_data :
+            frame = data_com.read ( 4666 )
+        else :
+            frame = eval ( saved_raw_frames[j] )
+            j += 1
         tsp = time.process_time_ns ()
-        pc3d_object = PC3D.PC3D ( raw_data )
+        pc3d_object = PC3D.PC3D ( frame )
         pc3d_object.get_json_data ()
         frame_json_2_file += pc3d_object.frame_json_2_file
         frame_json_2_azure += pc3d_object.frame_json_2_azure
