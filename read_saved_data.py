@@ -72,13 +72,13 @@ match people_counting_mode:
 print ( hello )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
-saved_raw_data_file = open ( saved_raw_data_file_name , 'r' )
+saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
 
 frame_json_2_azure = ''
 frame_json_2_file = ''
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-for saved_raw_frame in saved_raw_data_file :
-    saved_raw_frame_c = bytes ( saved_raw_frame , 'utf-8' )
+for saved_raw_frame in saved_raw_frames :
+    frame = eval ( saved_raw_frame )
     tlv_header_json = ""
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
