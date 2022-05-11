@@ -3,10 +3,6 @@
 # Wdrożyć checksum bo nie wiem skąd się biorą błędy w ramkach tlv
 
 import datetime
-from multiprocessing.dummy import Process
-import time
-import serial
-import serial.tools.list_ports
 import struct
 # sys.setdefaultencoding('utf-8')
 from mmradar_ops import mmradar_conf
@@ -21,8 +17,8 @@ from file_ops import write_data_2_local_file
 people_counting_mode            = 'pc3d_isk'
 control                         = 506660481457717506
 chirp_conf                      = 0
-data_com_delta_seconds          = 30
-raws                            = bytes (1)
+data_com_delta_seconds          = 1
+raw_data                        = bytes (1)
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 raw_data_file_name              = 'mmradar_gen.raw_data'
 raw_data_bin_file_name          = 'mmradar_gen.bin_raw_data'
@@ -42,13 +38,6 @@ tlv_header_dict = dict ()
 tlv_header_json = ""
 
 
-################################################################
-################ SERIALS COMM CONFiguration ####################
-################################################################
-conf_com                        = serial.Serial ()
-data_com                        = serial.Serial ()
-
-
 hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
 
 ################################################################
@@ -62,7 +51,7 @@ match people_counting_mode:
     case 'hvac':
         chirp_conf_file_name = hvac_cfg_file_name
     case _:
-        print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
+        print ( f'Error: no chirp cfg file!' )
 
 
 ################################################################
@@ -71,24 +60,20 @@ match people_counting_mode:
 
 print ( hello )
 
-################ OPEN CONF AND DATA COM PORTS ##################
-set_serials_cfg ( conf_com , data_com )
-open_serial_ports ( conf_com , data_com )
+################ OPEN FILE #####################################
+raw_frames_file = open ( 'mmradar_gen_good_2lines.bin_raw_data' , 'r' )
+raw_frames = raw_frames_file.readlines ()
 
-################ CHIRP CONF ####################################
-conf_com.reset_input_buffer ()
-conf_com.reset_output_buffer ()
-mmradar_conf ( chirp_conf_file_name , conf_com )
+##################### READ DATA ################################
 
-##################### READ DATA #################################
-data_com.reset_output_buffer ()
-data_com.reset_input_buffer ()
 frame_json_2_azure = ''
 frame_json_2_file = ''
-frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-while datetime.datetime.utcnow () < frame_read_time_up :
-    # print ( datetime.datetime.utcnow ().second )
-    raw_data = data_com.read ( 4666 )
+for raw_frame in raw_frames :
+    print ( raw_frame[:10] )
+    raw_frame.strip ("b")
+    print ( raw_frame[:10] )
+    raw_data = raw_frame.lstrip().removeprefix('b\'').removesuffix('\'').encode()
+    print ( raw_data[:10] )
     tlv_header_json = ""
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , raw_data[:frame_header_length] )
@@ -101,9 +86,6 @@ while datetime.datetime.utcnow () < frame_read_time_up :
         frame_header_dict = { 'error' : {e} }
     frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
     if not frame_header_dict.get ( 'error' ) :
-        #raw_data_s = raw_data.decode("utf-8") # need to test it and encode in reader
-        with open ( raw_data_bin_file_name , 'a' ) as f :
-            f.write ( f'{raw_data}\n' )
         raw_data = raw_data[frame_header_length:]
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
             try:
@@ -118,7 +100,5 @@ while datetime.datetime.utcnow () < frame_read_time_up :
         with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
             f.write ( frame_header_json + tlv_header_json + '\n' )
 
-
-##################### CLOSE DATA COM PORT ######################
-close_serial_ports ( conf_com , data_com )
-
+##################### CLOSE FILES ######################
+raw_frames_file.close ()
