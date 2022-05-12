@@ -23,7 +23,6 @@ import PC3D
 
 real_data                       = 0
 chirp_conf                      = 1
-read_iteration                  = 3
 data_com_delta_seconds          = 10
 plsa                            = []
 plwf                            = []
@@ -32,7 +31,7 @@ frame_json_2_azure              = ''
 raws                            = bytes(1)
 log_file_name                   = 'mmradar.log'
 data_file_name                  = 'mmradar.data'
-saved_data_file_name            = 'mmradar_gen_good.bin_raw_data'
+saved_data_file_name            = 'mmradar_gen_good_2lines.bin_raw_data'
 hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
@@ -125,64 +124,68 @@ if real_data :
     data_com.reset_input_buffer ()
 else :
     saved_raw_frames = open ( saved_data_file_name , 'r' ) .readlines ()
-for i in range ( read_iteration ) :
-    frame_json_2_azure = ''
-    frame_json_2_file = ''
-    frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-    j = 0
-    while datetime.datetime.utcnow () < frame_read_time_up :
-        if real_data :
-            frame = data_com.read ( 4666 )
-        else :
-            frame = eval ( saved_raw_frames[j] )
-            j += 1
-        tsp = time.process_time_ns ()
-        pc3d_object = PC3D.PC3D ( frame )
-        pc3d_object.get_json_data ()
-        frame_json_2_file += pc3d_object.frame_json_2_file
-        frame_json_2_azure += pc3d_object.frame_json_2_azure
-        del pc3d_object
-        tp = ( time.process_time_ns () - tsp ) / 1000000
-        if tp > 1 :
-            logging.info ( f"WARNING: Process time [ms]: {tp}" )
-            # logging.info ( f"WARNING: Frame {pc3d_object.frame_header_dict.get('frame_number')} process time [ms]: {tp}" )
+    saved_raw_frames_numbers = len(saved_raw_frames)
+
+frame_json_2_azure = ''
+frame_json_2_file = ''
+frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
+i = 0
+while datetime.datetime.utcnow () < frame_read_time_up :
+    if real_data :
+        frame = data_com.read ( 4666 )
+    else :
+        if i == saved_raw_frames_numbers :
+            break
+        frame = eval ( saved_raw_frames[i] )
+        i += 1
+    tsp = time.process_time_ns ()
+    pc3d_object = PC3D.PC3D ( frame )
+    pc3d_object.get_json_data ()
+    frame_json_2_file += pc3d_object.frame_json_2_file
+    frame_json_2_azure += pc3d_object.frame_json_2_azure
+    del pc3d_object
+    tp = ( time.process_time_ns () - tsp ) / 1000000
+    if tp > 1 :
+        logging.info ( f"WARNING: Process time [ms]: {tp}" )
+        # logging.info ( f"WARNING: Frame {pc3d_object.frame_header_dict.get('frame_number')} process time [ms]: {tp}" )
 
 
-    if __name__ == '__main__' :
-        p = Process ( target = write_data_2_local_file , args = ( frame_json_2_file , data_file_name , ) , name = f"File-{i}" )
-        p.daemon = True
-        p.start ()
-        plwf.append ( p )
-    if __name__ == '__main__' :
-        #p = Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"Azure-{i}" )
-        plsa.append ( Process ( target = send_2_azure_iothub , args = ( frame_json_2_azure , ) , name = f"{i}" ) )
-        plsa[-1].daemon = True
-        plsa[-1].start ()
-        #plsa.append ( p )
+if __name__ == '__main__' :
+    p = Process ( target = write_data_2_local_file , args = ( frame_json_2_file , data_file_name , ) , name = f"File-{tsp}" )
+    p.daemon = True
+    p.start ()
+    plwf.append ( p )
+if __name__ == '__main__' :
+    #p = Process ( target = send_2_azure_iothub , args = ( pc3d_object.frame_json_2_azure , ) , name = f"Azure-{i}" )
+    plsa.append ( Process ( target = send_2_azure_iothub , args = ( frame_json_2_azure , ) , name = f"{tsp}" ) )
+    plsa[-1].daemon = True
+    plsa[-1].start ()
+    #plsa.append ( p )
 
-    print ( f"plsa: {len ( plsa )}" )
-    plsa_print = ''
-    for j in plsa :
-        if not j.is_alive () :
-            #plsa.remove ( j )
-            #plsa.remove ( plsa.index ( j ) )
-            del plsa[plsa.index ( j )]
-        plsa_print += f"{j.name},"
-    print (f"{plsa_print}")
-    #for j in plwf :
-    #    print ( f"plwf c: {len ( plwf )}" )
-    #    if not j.is_alive () :
-    #        print (f"plwf {j} is not alive")
-    #        plwf.remove (j)
-    #    else :
-    #        print (f"plwf {j} is alive")
+print ( f"plsa: {len ( plsa )}" )
+plsa_print = ''
+for j in plsa :
+    if not j.is_alive () :
+        #plsa.remove ( j )
+        #plsa.remove ( plsa.index ( j ) )
+        del plsa[plsa.index ( j )]
+    plsa_print += f"{j.name},"
+print (f"{plsa_print}")
+#for j in plwf :
+#    print ( f"plwf c: {len ( plwf )}" )
+#    if not j.is_alive () :
+#        print (f"plwf {j} is not alive")
+#        plwf.remove (j)
+#    else :
+#        print (f"plwf {j} is alive")
 
 # Read data
 #mmradar_conf ( mmradar_stop_conf_file_name , conf_com )
 
 
 ##################### CLOSE DATA COM PORT ######################
-close_serial_ports ( conf_com , data_com )
+if real_data :
+    close_serial_ports ( conf_com , data_com )
 
 ##################### CLOSE AZURE ##############################
 #azure_client.disconnect ()
