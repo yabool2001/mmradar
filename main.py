@@ -134,7 +134,7 @@ while datetime.datetime.utcnow () < frame_read_time_up :
     if real_data :
         frame = data_com.read ( 4666 )
     else :
-        if i == saved_raw_frames_numbers :
+        if i >= saved_raw_frames_numbers :
             break
         frame = eval ( saved_raw_frames[i] )
         i += 1

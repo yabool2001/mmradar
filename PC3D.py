@@ -1,6 +1,6 @@
 import datetime
 import logging
-import random
+import time
 import struct
 
 
@@ -203,6 +203,7 @@ class PC3D :
         if self.get_frame_header () :
             self.raw_data = self.raw_data[self.frame_header_length:]
             self.get_tlvs ()
-        self.frame_json_2_file = f"\n\n{{frame:{self.frame_header_json},{self.tlvs_json}}}"
-        self.frame_json_2_azure = f"{{'id' : {datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:17]},'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{self.presence_indication_value}}}"
+        self.frame_json_2_file = f"\n\n{{frame:{self.frame_header_json},timestamp_ns:{time.time_ns ()},{self.tlvs_json}}}"
+        self.frame_json_2_azure = f"{{'id' : {time.time_ns ()},'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{self.presence_indication_value}}}"
+        #self.frame_json_2_azure = f"{{'id' : {datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:17]},'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{self.presence_indication_value}}}"
         #self.frame_json_2_azure = f"{{'frame':{{'frame_number':{self.frame_header_dict.get('frame_number')},'presence':{random.randint ( 0, 12 )}}}"
