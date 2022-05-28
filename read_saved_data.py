@@ -84,7 +84,7 @@ for saved_raw_frame in saved_raw_frames :
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
         if sync == control :
             # frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum }
-            frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'total_packet_length' : total_packet_length }
+            frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs }
         else :
             frame_header_dict = { 'error' : 'control != {sync}' }
     except struct.error as e :
@@ -98,8 +98,8 @@ for saved_raw_frame in saved_raw_frames :
             try:
                 tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
                 tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
-                if tlv_type == 7 or tlv_type == 8 :
-                    print ( tlv_type )
+                #if tlv_type == 7 or tlv_type == 8 :
+                    #print ( tlv_type )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
             tlv_header_json += f"'tlv_header':{tlv_header_dict}"
