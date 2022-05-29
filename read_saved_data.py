@@ -5,7 +5,9 @@
 import datetime
 import multiprocessing
 from multiprocessing.dummy import Process
+from pprint import pprint
 import time
+from numpy import append
 import serial
 import serial.tools.list_ports
 import struct
@@ -32,6 +34,7 @@ pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
 
+frames_list = []
 frame_header_struct = 'Q9I2H'
 frame_header_length = struct.calcsize ( frame_header_struct )
 frame_header_dict = dict ()
@@ -78,27 +81,38 @@ frame_json_2_file = ''
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 for saved_raw_frame in saved_raw_frames :
     frame = eval ( saved_raw_frame )
+    frame_dict = { 'id' : time.time_ns() }
     tlv_header_json = ""
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
         if sync == control :
             # frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum }
-            frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs }
+            frame_header_dict = { 'frame_header' : { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs } }
+            pprint (frame_header_dict)
+            frame_dict.update ( frame_header_dict )
         else :
-            frame_header_dict = { 'error' : 'control != {sync}' }
+            frame_header_dict = { 'frame_header' : { 'error' : 'control != {sync}' } }
     except struct.error as e :
         frame_header_dict = { 'error' : {e} }
     frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
     if not frame_header_dict.get ( 'error' ) :
         frame = frame[frame_header_length:]
+        tlvs_list = []
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
+            tlv_list = []
             try:
                 tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
-                tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
+                tlv_header_dict = { 'tlv_header' : { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length } }
+                frame_dict.update ( tlv_header_dict )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
-            tlv_header_json += f"'tlv_header':{tlv_header_dict}"
+            tlv_header_json += f"{tlv_header_dict}"
             frame = frame[tlv_length:]
+        del ( tlvs_list )
         with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
             f.write ( frame_header_json + tlv_header_json + '\n' )
+    frames_list.append ( frame_dict )
+    del ( frame_dict )
+pprint ( frames_list )
+#frames_list.clear ()
 
