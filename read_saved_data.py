@@ -27,7 +27,6 @@ raws                            = bytes(1)
 frame                           = bytes(1)
 saved_raw_data_file_name        = 'mmradar_gen_good.bin_raw_data'
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
-raw_data_file_name              = 'mmradar_gen.raw_data'
 hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
 pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
@@ -91,15 +90,11 @@ for saved_raw_frame in saved_raw_frames :
         frame_header_dict = { 'error' : {e} }
     frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
     if not frame_header_dict.get ( 'error' ) :
-        with open ( raw_data_file_name , 'a' , encoding='utf-8' ) as f :
-            f.write ( f'{frame}\n' )
         frame = frame[frame_header_length:]
         for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
             try:
                 tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
                 tlv_header_dict = { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length }
-                #if tlv_type == 7 or tlv_type == 8 :
-                    #print ( tlv_type )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
             tlv_header_json += f"'tlv_header':{tlv_header_dict}"
