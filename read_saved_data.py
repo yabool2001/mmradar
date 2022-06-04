@@ -94,20 +94,24 @@ for saved_raw_frame in saved_raw_frames :
             frame_header_dict = { 'frame_header' : { 'error' : 'control != {sync}' } }
     except struct.error as e :
         frame_header_dict = { 'error' : {e} }
-    frame_header_json = f"{{'frame_header':{frame_header_dict}}}"
+    frame_header_json = f"{frame_header_dict}"
     if not frame_header_dict.get ( 'error' ) :
         frame = frame[frame_header_length:]
         tlvs_list = []
-        for i in range ( frame_header_dict.get ( 'num_tlvs' ) ) :
-            tlv_list = []
+        for i in range ( frame_header_dict['frame_header'].get ( 'num_tlvs' ) ) :
+            tlv_dict = dict ()
             try:
                 tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
                 tlv_header_dict = { 'tlv_header' : { 'tlv_type' : tlv_type , 'tlv_length' : tlv_length } }
-                frame_dict.update ( tlv_header_dict )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
-            tlv_header_json += f"{tlv_header_dict}"
+            tlv_dict.update ( tlv_header_dict )
+            del ( tlv_header_dict )
+            tlvs_list.append ( tlv_dict )
+            tlv_header_json += f"{tlv_dict}"
+            del ( tlv_dict )
             frame = frame[tlv_length:]
+        frame_dict.update ( tlvs_list )
         del ( tlvs_list )
         with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
             f.write ( frame_header_json + tlv_header_json + '\n' )
