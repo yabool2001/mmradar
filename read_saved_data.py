@@ -15,7 +15,8 @@ import struct
 from mmradar_ops import mmradar_conf
 from serial_ops import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
 from file_ops import write_data_2_local_file
-
+import TargetIndex
+import TargetList
 
 ################################################################
 ######################## DEFINITIONS ###########################
@@ -95,21 +96,26 @@ for saved_raw_frame in saved_raw_frames :
         frame_header_dict = { 'error' : {e} }
     if not frame_header_dict.get ( 'error' ) :
         frame = frame[frame_header_length:]
-        #for i in range ( frame_header_dict['frame_header'].get ( 'num_tlvs' ) ) :
+        tlv_type_list = []
         for i in range ( frame_dict.get ( 'num_tlvs' ) ) :
             tlv_dict = dict ()
             try:
                 tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
-                frame_dict.update ( {'tlv_type' : tlv_type } )
+                tlv_type_list.append ( tlv_type )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
+            if tlv_type == 7 :
+                targets_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:tlv_length] )
+                frame_dict.update ( target_list_tlv = targets_list.get_targets_list () )
+            if tlv_type == 8 :
+                targets_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:tlv_length] )
+                frame_dict.update ( target_index_tlv = targets_index_list.get_targets_index_list () )
             frame = frame[tlv_length:]
-        #with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
-            #f.write ( frame_header_json + tlv_header_json + '\n' )
+        frame_dict.update ( tlv_type_list = tlv_type_list )
     frames_list.append ( frame_dict )
     del ( frame_dict )
 with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
-    f.write ( f'{frames_list}' + '\n\n' )
-#pprint ( frames_list )
+    f.write ( f'{frames_list}' + '\n\r' )
+pprint ( frames_list )
 frames_list.clear ()
 
