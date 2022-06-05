@@ -11,6 +11,7 @@ from numpy import append
 import serial
 import serial.tools.list_ports
 import struct
+import PointCloud
 # sys.setdefaultencoding('utf-8')
 from mmradar_ops import mmradar_conf
 from serial_ops import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
@@ -104,12 +105,15 @@ for saved_raw_frame in saved_raw_frames :
                 tlv_type_list.append ( tlv_type )
             except struct.error as e :
                 tlv_header_dict = { 'error' : {e} }
+            if tlv_type == 6 :
+                point_cloud = PointCloud.PointCloud ( tlv_length - tlv_header_length , frame[tlv_header_length:][:(tlv_length - tlv_header_length )] )
+                frame_dict.update ( point_cloud_unit = point_cloud.get_point_unit_dict () )
             if tlv_type == 7 :
-                targets_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:tlv_length] )
-                frame_dict.update ( target_list_tlv = targets_list.get_targets_list () )
+                targets_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
+                frame_dict.update ( targets_list = targets_list.get_targets_list () )
             if tlv_type == 8 :
-                targets_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:tlv_length] )
-                frame_dict.update ( target_index_tlv = targets_index_list.get_targets_index_list () )
+                targets_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
+                frame_dict.update ( targets_index = targets_index_list.get_targets_index_list () )
             frame = frame[tlv_length:]
         frame_dict.update ( tlv_type_list = tlv_type_list )
     frames_list.append ( frame_dict )
