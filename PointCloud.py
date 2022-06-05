@@ -8,7 +8,6 @@ class PointCloud :
         
         self.point_unit_struct = '5f'
         self.point_unit_length = struct.calcsize ( self.point_unit_struct )
-        self.targets_index_list = []
         self.point_unit_dict = dict ()
         
         self.point_struct = '2B3h'
@@ -28,8 +27,9 @@ class PointCloud :
         points_number = int ( ( self.length - self.point_unit_length ) / self.point_length )
         for i in range ( points_number ) :
             try :
-                elevation , azimuth , doppler , range , snr = struct.unpack ( self.point_struct , self.v[( self.point_unit_length + self.point_length * i ):][:self.point_length] )
-                point_dict = { 'elevation' : elevation , 'azimuth' : azimuth , 'doppler' : doppler , 'range' : range , 'snr' : snr }
+                # be careful to not explicit variables name range below
+                elevation , azimuth , doppler , range_range , snr = struct.unpack ( self.point_struct , self.v[( self.point_unit_length + ( self.point_length * i ) ):][:self.point_length] )
+                point_dict = { 'elevation' : elevation , 'azimuth' : azimuth , 'doppler' : doppler , 'range' : range_range , 'snr' : snr }
                 self.points_list.append ( point_dict )
             except struct.error as e :
                 self.points_list.append ( f'error: {e}' )

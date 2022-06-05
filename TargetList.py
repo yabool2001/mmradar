@@ -28,7 +28,7 @@ class TargetList :
                 err_covariance = struct.unpack ( self.target_part2_struct , self.v[( i * self.target_length ) + self.target_part1_length:][:self.target_part2_length] )
                 gain , confidence_level = struct.unpack ( self.target_part3_struct , self.v[( i * self.target_length ) + self.target_part1_length + self.target_part2_length:][:self.target_part3_length] )
                 #self.targets_list.append ( f"{{'target_id':{target_id},'target_pos_x':{target_pos_x}, 'target_pos_y':{target_pos_y},'target_pos_z':{target_pos_z},'target_vel_x':{target_vel_x}, 'target_vel_y':{target_vel_y},'target_vel_z':{target_vel_z},'target_acc_x':{target_acc_x},'target_acc_y':{target_acc_y},'target_acc_z':{target_acc_z},'err_covariance':{err_covariance},'gain':{gain},'confidence_level':{confidence_level}}}" )
-                target = { 'track_id' : track_id , 'pos_x' : pos_x }
+                target = { 'track_id' : track_id , 'pos_x' : pos_x , 'pos_y' : pos_y , 'pos_z' : pos_z , 'vel_x' : vel_x , 'vel_y' : vel_y , 'vel_z' : vel_z , 'acc_x' : acc_x , 'acc_y' : acc_y , 'acc_z' :acc_z }
                 self.targets_list.append ( target )
             except struct.error as e :
                 self.targets_list.append ( f"error: {e}" )
