@@ -78,8 +78,6 @@ print ( hello )
 ################ OPEN FILE WITH SAVED RAW DATA #################
 saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
 
-frame_json_2_azure = ''
-frame_json_2_file = ''
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 for saved_raw_frame in saved_raw_frames :
     frame = eval ( saved_raw_frame )
@@ -87,12 +85,10 @@ for saved_raw_frame in saved_raw_frames :
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
         if sync == control :
-            # frame_header_dict = { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum }
-            #frame_header_dict = { 'frame_header' : { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs } }
-            #frame_dict.update ( frame_header_dict )
+            #frame_dict.update ( { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum } )
             frame_dict.update ( { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs } )
         else :
-            frame_header_dict = { 'frame_header' : { 'error' : 'control != {sync}' } }
+            frame_dict.update ( { 'frame header error' : 'control != {sync}' } )
     except struct.error as e :
         frame_header_dict = { 'error' : {e} }
     if not frame_header_dict.get ( 'error' ) :
@@ -108,6 +104,7 @@ for saved_raw_frame in saved_raw_frames :
             if tlv_type == 6 :
                 point_cloud = PointCloud.PointCloud ( tlv_length - tlv_header_length , frame[tlv_header_length:][:(tlv_length - tlv_header_length )] )
                 frame_dict.update ( point_cloud_unit = point_cloud.get_point_unit_dict () )
+                frame_dict.update ( points = point_cloud.get_points_list () )
             if tlv_type == 7 :
                 targets_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                 frame_dict.update ( targets_list = targets_list.get_targets_list () )
