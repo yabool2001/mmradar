@@ -1,5 +1,6 @@
 # Aplikacja do odczytu danych z sensora i zapisu raw data do pliku i sparsowanych danych do odpowiedniego pliku
 
+# Znaleźć błąd w target index albo zadać pytanie na formu o same 255
 # Wdrożyć checksum bo nie wiem skąd się biorą błędy w ramkach tlv
 
 import datetime
