@@ -9,6 +9,7 @@ import multiprocessing
 from multiprocessing.dummy import Process
 from pprint import pprint
 import time
+from xml.etree.ElementTree import tostring
 from numpy import append
 import serial
 import serial.tools.list_ports
@@ -18,6 +19,7 @@ import PointCloud
 from mmradar_ops import mmradar_conf
 from serial_ops import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
 from file_ops import write_data_2_local_file
+import tkinter as tk
 import Presence
 import TargetIndex
 import TargetList
@@ -116,6 +118,10 @@ for saved_raw_frame in saved_raw_frames :
                 case 8 :
                     target_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_index_list = target_index_list.get_target_index_list () )
+                    # 3 linie poniżej do wywalenia po nagraniu nowych plików z targetami
+                    for target_id in frame_dict['target_index_list'] :
+                        if target_id['target_id'] < 253 :
+                            print ( f"{target_id} {frame_dict['frame_number']}" )
                 case 11 :
                     presence = Presence.Presence ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( { 'presence' : presence.get_presence_dict () } )
