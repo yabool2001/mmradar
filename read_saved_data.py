@@ -26,15 +26,15 @@ import TargetList
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
-com_source                      = 0
+com_source                      = 1
 chirp_conf                      = 0
-data_com_delta_seconds          = 60
+data_com_delta_seconds          = 120
 
 control                         = 506660481457717506
 raws                            = bytes(1)
 frame                           = bytes(1)
 raw_data_bin_file_name          = 'mmradar_gen.bin_raw_data'
-saved_raw_data_file_name        = 'mmradar_gen_good3.bin_raw_data'
+saved_raw_data_file_name        = 'mmradar_gen_good2.bin_raw_data'
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_cfg_file_name     = 'chirp_cfg/sensor_stop.cfg'
@@ -122,9 +122,9 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                 case 8 :
                     target_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_index_list = target_index_list.get_target_index_list () )
-                    for target_id in frame_dict['target_index_list'] :
-                        if target_id < 253 :
-                            print ( f"{target_id} {frame_dict['frame_number']}" )
+                    #for target_id in frame_dict['target_index_list'] :
+                    #    if target_id < 253 :
+                    #        print ( f"{target_id} {frame_dict['frame_number']}" )
                 case 11 :
                     presence = Presence.Presence ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( presence.get_presence_dict () )
