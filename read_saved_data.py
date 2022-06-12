@@ -27,12 +27,13 @@ import TargetList
 ######################## DEFINITIONS ###########################
 ################################################################
 com_source                      = 1
-chirp_conf                      = 2
-data_com_delta_seconds          = 60
+chirp_conf                      = 0
+data_com_delta_seconds          = 10
 
 control                         = 506660481457717506
 raws                            = bytes(1)
 frame                           = bytes(1)
+raw_data_bin_file_name          = 'mmradar_gen.bin_raw_data'
 saved_raw_data_file_name        = 'mmradar_gen_good.bin_raw_data'
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
@@ -43,11 +44,9 @@ frames_list = []
 
 frame_header_struct = 'Q9I2H'
 frame_header_length = struct.calcsize ( frame_header_struct )
-frame_header_dict = dict ()
 
 tlv_header_struct = '2I'
 tlv_header_length = struct.calcsize ( tlv_header_struct )
-tlv_header_dict = dict ()
 
 hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
 
@@ -66,6 +65,7 @@ if com_source :
             mmradar_conf ( mmradar_start_cfg_file_name , conf_com )
         if chirp_conf == 2 :
             mmradar_conf ( mmradar_cfg_file_name , conf_com )
+        print ("Chirp configured !")
     data_com.reset_output_buffer()
     data_com.reset_input_buffer ()
 
@@ -81,7 +81,6 @@ saved_raw_frames_number = len ( saved_raw_frames )
 saved_raw_frame_counter = 0
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_counter < saved_raw_frames_number :
-#for saved_raw_frame in saved_raw_frames :
     if com_source :
         frame = data_com.read ( 4666 )
     else :
@@ -98,8 +97,11 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
         else :
             frame_dict.update ( { 'frame header error' : 'control != {sync}' } )
     except struct.error as e :
-        frame_header_dict = { 'error' : {e} }
-    if not frame_header_dict.get ( 'error' ) :
+        frame_dict.update ( { 'frame header error' : {e} } )
+    if not frame_dict.get ( 'frame header error' ) :
+        print ( frame_number )
+        with open ( raw_data_bin_file_name , 'a' ) as f :
+            f.write ( f'{frame}\n' )
         frame = frame[frame_header_length:]
         tlv_type_list = []
         for i in range ( frame_dict.get ( 'num_tlvs' ) ) :
@@ -107,7 +109,7 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                 tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
                 tlv_type_list.append ( tlv_type )
             except struct.error as e :
-                tlv_header_dict = { 'error' : {e} }
+                frame_dict.update ( { 'tlv header error' : {e} } )
             match tlv_type :
                 case 6 :
                     point_cloud = PointCloud.PointCloud ( tlv_length - tlv_header_length , frame[tlv_header_length:][:(tlv_length - tlv_header_length )] )
@@ -137,3 +139,5 @@ with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
 #pprint ( frames_list )
 frames_list.clear ()
 
+if com_source :
+    close_serial_ports ( conf_com , data_com )
