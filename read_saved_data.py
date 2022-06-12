@@ -26,19 +26,18 @@ import TargetList
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
-
-people_counting_mode            = 'pc3d'
-control                         = 506660481457717506
-chirp_conf                      = 0
+com_source                      = 1
+chirp_conf                      = 2
 data_com_delta_seconds          = 60
+
+control                         = 506660481457717506
 raws                            = bytes(1)
 frame                           = bytes(1)
 saved_raw_data_file_name        = 'mmradar_gen_good.bin_raw_data'
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
-hvac_cfg_file_name              = 'chirp_cfg/sense_and_direct_68xx-mzo1.cfg'
-pc3d_cfg_file_name              = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
-mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
-mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
+mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
+mmradar_stop_cfg_file_name     = 'chirp_cfg/sensor_stop.cfg'
+mmradar_start_cfg_file_name    = 'chirp_cfg/sensor_start.cfg'
 
 frames_list = []
 
@@ -50,28 +49,25 @@ tlv_header_struct = '2I'
 tlv_header_length = struct.calcsize ( tlv_header_struct )
 tlv_header_dict = dict ()
 
+hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
 
 ################################################################
 ################ SERIALS COMM CONFiguration ####################
 ################################################################
-
-conf_com                        = serial.Serial ()
-data_com                        = serial.Serial ()
-
-
-hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
-
-################################################################
-############ OPEN LOG, DATA AND CHIRP CONF FILE ################
-################################################################
-match people_counting_mode:
-    case 'pc3d':
-        chirp_conf_file_name = pc3d_cfg_file_name
-    case 'hvac':
-        chirp_conf_file_name = hvac_cfg_file_name
-    case _:
-        print ( f'{time.gmtime ().tm_hour}:{time.gmtime ().tm_min}:{time.gmtime ().tm_sec} Error: no chirp cfg file!' )
-
+if com_source :
+    conf_com = serial.Serial ()
+    data_com = serial.Serial ()
+    set_serials_cfg ( conf_com , data_com )
+    open_serial_ports ( conf_com , data_com )
+    conf_com.reset_input_buffer()
+    conf_com.reset_output_buffer()
+    if chirp_conf :
+        if chirp_conf == 1 :
+            mmradar_conf ( mmradar_start_cfg_file_name , conf_com )
+        if chirp_conf == 2 :
+            mmradar_conf ( mmradar_cfg_file_name , conf_com )
+    data_com.reset_output_buffer()
+    data_com.reset_input_buffer ()
 
 ################################################################
 ################ START PROGRAM #################################
@@ -81,10 +77,16 @@ print ( hello )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
 saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
-
+saved_raw_frames_number = len ( saved_raw_frames )
+saved_raw_frame_counter = 0
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-for saved_raw_frame in saved_raw_frames :
-    frame = eval ( saved_raw_frame )
+while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_counter < saved_raw_frames_number :
+#for saved_raw_frame in saved_raw_frames :
+    if com_source :
+        frame = data_com.read ( 4666 )
+    else :
+        frame = eval ( saved_raw_frames[saved_raw_frame_counter] )
+        saved_raw_frame_counter += 1
     frame_dict = { 'id' : time.time_ns() }
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
