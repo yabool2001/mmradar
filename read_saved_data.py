@@ -3,23 +3,22 @@
 # Znaleźć błąd w target index albo zadać pytanie na formu o same 255
 # Wdrożyć checksum bo nie wiem skąd się biorą błędy w ramkach tlv
 
-from asyncio.windows_events import NULL
 import datetime
-import multiprocessing
+#import multiprocessing
 from multiprocessing.dummy import Process
 from pprint import pprint
 import time
-from xml.etree.ElementTree import tostring
 from numpy import append
 import serial
 import serial.tools.list_ports
 import struct
-import PointCloud
 # sys.setdefaultencoding('utf-8')
 from mmradar_ops import mmradar_conf
 from serial_ops import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
 from file_ops import write_data_2_local_file
 import tkinter as tk
+
+import PointCloud
 import Presence
 import TargetIndex
 import TargetList
@@ -42,14 +41,14 @@ mmradar_stop_conf_file_name     = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_conf_file_name    = 'chirp_cfg/sensor_start.cfg'
 
 frames_list = []
+
 frame_header_struct = 'Q9I2H'
 frame_header_length = struct.calcsize ( frame_header_struct )
 frame_header_dict = dict ()
-frame_header_json = None
+
 tlv_header_struct = '2I'
 tlv_header_length = struct.calcsize ( tlv_header_struct )
 tlv_header_dict = dict ()
-tlv_header_json = ""
 
 
 ################################################################
