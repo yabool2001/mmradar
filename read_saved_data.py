@@ -26,7 +26,7 @@ import TargetList
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
-com_source                      = 1
+com_source                      = 0
 chirp_conf                      = 0
 data_com_delta_seconds          = 120
 
@@ -34,7 +34,7 @@ control                         = 506660481457717506
 raws                            = bytes(1)
 frame                           = bytes(1)
 raw_data_bin_file_name          = 'mmradar_gen.bin_raw_data'
-saved_raw_data_file_name        = 'mmradar_gen_good2.bin_raw_data'
+saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_cfg_file_name     = 'chirp_cfg/sensor_stop.cfg'
