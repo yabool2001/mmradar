@@ -13,10 +13,9 @@ class TargetIndex :
         for i in range ( targets_index_number ) :
             try :
                 target_id = struct.unpack ( self.target_index_struct , self.v[( i * self.target_index_length ):][:self.target_index_length] )
-                if target_id :
-                    self.targets_index_list.append ( target_id[0] )
-                    #if target_id[0] < 253 :
-                        #print ( f'target_id = {target_id[0]}' )
+                self.targets_index_list.append ( target_id[0] )
+                #if target_id[0] < 253 :
+                    #print ( f'target_id = {target_id[0]}' )
             except struct.error as e :
                 self.targets_index_list.append ( f"error: {e}" )
         return self.targets_index_list

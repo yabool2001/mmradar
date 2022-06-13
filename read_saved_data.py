@@ -37,8 +37,8 @@ raw_data_bin_file_name          = 'mmradar_gen.bin_raw_data'
 saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
 parsed_data_file_name           = 'mmradar_gen.parsed_data'
 mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
-mmradar_stop_cfg_file_name     = 'chirp_cfg/sensor_stop.cfg'
-mmradar_start_cfg_file_name    = 'chirp_cfg/sensor_start.cfg'
+mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
+mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 
 frames_list = []
 
@@ -89,7 +89,7 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
     frame_dict = { 'id' : time.time_ns() }
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
-        if frame_number == 69721 :
+        if frame_number == 8933 :
             pass
         if sync == control :
             #frame_dict.update ( { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum } )

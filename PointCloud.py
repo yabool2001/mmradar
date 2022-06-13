@@ -10,7 +10,7 @@ class PointCloud :
         self.point_unit_length = struct.calcsize ( self.point_unit_struct )
         self.point_unit_dict = dict ()
         
-        self.point_struct = '2B3h'
+        self.point_struct = '2b1h2H'
         self.point_length = struct.calcsize ( self.point_struct )
         self.points_list = []
 
