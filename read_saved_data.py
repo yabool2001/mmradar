@@ -98,6 +98,7 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
             frame_dict.update ( { 'frame header error' : 'control != {sync}' } )
     except struct.error as e :
         frame_dict.update ( { 'frame header error' : {e} } )
+    sync = 0
     if not frame_dict.get ( 'frame header error' ) :
         #print ( frame_number )
         if com_source :
