@@ -89,7 +89,7 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
     frame_dict = { 'id' : time.time_ns() }
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
-        if frame_number == 8933 :
+        if frame_number == 8961 :
             pass
         if sync == control :
             #frame_dict.update ( { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum } )
@@ -124,9 +124,6 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                 case 8 :
                     target_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_index_list = target_index_list.get_target_index_list () )
-                    #for target_id in frame_dict['target_index_list'] :
-                    #    if target_id < 253 :
-                    #        print ( f"{target_id} {frame_dict['frame_number']}" )
                 case 11 :
                     presence = Presence.Presence ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( presence.get_presence_dict () )
