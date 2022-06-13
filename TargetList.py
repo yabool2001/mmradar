@@ -32,4 +32,5 @@ class TargetList :
                 self.targets_list.append ( target )
             except struct.error as e :
                 self.targets_list.append ( f"error: {e}" )
+                break
         return self.targets_list

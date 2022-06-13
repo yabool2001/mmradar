@@ -112,6 +112,7 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                 tlv_type_list.append ( tlv_type )
             except struct.error as e :
                 frame_dict.update ( { 'tlv header error' : {e} } )
+                break
             match tlv_type :
                 case 6 :
                     point_cloud = PointCloud.PointCloud ( tlv_length - tlv_header_length , frame[tlv_header_length:][:(tlv_length - tlv_header_length )] )
