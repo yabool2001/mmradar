@@ -132,6 +132,7 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
             tlv_type = None
             tlv_length = None
         frame_dict.update ( tlv_type_list = tlv_type_list )
+        tlv_type_list = None
     frames_list.append ( frame_dict )
     del ( frame_dict )
 with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
