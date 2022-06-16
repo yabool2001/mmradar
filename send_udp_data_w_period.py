@@ -20,7 +20,7 @@ from file_ops import write_data_2_local_file
 ################################################################
 
 com_source                      = 1
-chirp_conf                      = 0
+chirp_conf                      = 2
 period_send_delta_seconds       = 1
 
 control                         = 506660481457717506
