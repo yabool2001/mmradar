@@ -27,7 +27,8 @@ control                         = 506660481457717506
 frame                           = bytes (1)
 
 #dest_udp_ip                     = '10.0.0.157' # Lipków
-dest_udp_ip                     = '192.168.1.17' # Meander
+#dest_udp_ip                     = '192.168.1.17' # Meander raspberrypi
+dest_udp_ip                     = '192.168.1.30' # Meander MW50-SV0
 dest_udp_port                   = 10005
 
 #saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
