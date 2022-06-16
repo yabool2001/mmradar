@@ -3,6 +3,8 @@
 # Znaleźć błąd w target index albo zadać pytanie na formu o same 255
 # Wdrożyć checksum bo nie wiem skąd się biorą błędy w ramkach tlv
 
+# To decode messages on linux machine use command: sudo tcpdump -vv -A udp dst port 10005
+
 import datetime
 #import multiprocessing
 from multiprocessing.dummy import Process
@@ -11,6 +13,7 @@ import time
 from numpy import append
 import serial
 import serial.tools.list_ports
+import socket
 import struct
 # sys.setdefaultencoding('utf-8')
 from mmradar_ops import mmradar_conf
@@ -26,19 +29,23 @@ import TargetList
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
-com_source                      = 1
+com_source                      = 0
 chirp_conf                      = 0
-data_com_delta_seconds          = 1
+data_com_delta_seconds          = 3
 
 control                         = 506660481457717506
 raws                            = bytes(1)
 frame                           = bytes(1)
 raw_data_bin_file_name          = f'save_bin_data/mmradar_gen_{time.time_ns()}.bin_raw_data'
+#saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
 saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
 parsed_data_file_name           = f'save_parsed_data/mmradar_gen_{time.time_ns()}.parsed_data'
 mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
+
+dest_udp_ip                     = '10.0.0.157'
+dest_udp_port                   = 10005
 
 frames_list = []
 
@@ -70,6 +77,12 @@ if com_source :
     data_com.reset_input_buffer ()
 
 ################################################################
+################ SOCKET Configuration ##########################
+################################################################
+udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+#udp.sendto ( bytes ( 'Hello' , 'utf-8') , ( dest_udp_ip , dest_udp_port ) )
+
+################################################################
 ################ START PROGRAM #################################
 ################################################################
 
@@ -89,8 +102,8 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
     frame_dict = { 'id' : time.time_ns() }
     try:
         sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
-        if frame_number == 8961 :
-            pass
+        #if frame_number == 8961 :
+        #    pass
         if sync == control :
             #frame_dict.update ( { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs , 'sync' : sync , 'version' : version , 'total_packet_length' : total_packet_length , 'platform' : platform , 'subframe_number' : subframe_number , 'chirp_processing_margin' : chirp_processing_margin , 'frame_processing_margin' : frame_processing_margin , 'track_process_time' : track_process_time , 'uart_sent_time' : uart_sent_time , 'checksum' : checksum } )
             frame_dict.update ( { 'frame_number' : frame_number , 'num_tlvs' : num_tlvs } )
@@ -100,7 +113,6 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
         frame_dict.update ( { 'frame header error' : {e} } )
     sync = 0
     if not frame_dict.get ( 'frame header error' ) :
-        #print ( frame_number )
         if com_source :
             with open ( raw_data_bin_file_name , 'a' ) as f :
                 f.write ( f'{frame}\n' )
