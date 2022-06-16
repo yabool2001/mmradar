@@ -1,5 +1,6 @@
 # Script with minimum parsing to send binary data to UDP with period 
 # sudo tcpdump -vv -A udp dst port 10005
+# do odbioru służy skrypt C:\Users\mzeml\python\mmradar\rcv_udp_data.py
 
 
 import datetime
