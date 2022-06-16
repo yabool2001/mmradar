@@ -19,12 +19,13 @@ from file_ops import write_data_2_local_file
 
 com_source                      = 1
 chirp_conf                      = 0
-data_com_delta_seconds          = 60
+data_com_delta_seconds          = 1
 
 control                         = 506660481457717506
 frame                           = bytes (1)
 
-dest_udp_ip                     = '10.0.0.157'
+dest_udp_ip                     = '10.0.0.157' # Lipków
+#dest_udp_ip                     = '192.168.1.' # Meander
 dest_udp_port                   = 10005
 
 #saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
@@ -69,7 +70,7 @@ saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
 saved_raw_frames_number = len ( saved_raw_frames )
 saved_raw_frame_counter = 0
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_counter < saved_raw_frames_number :
+while ( datetime.datetime.utcnow () < frame_read_time_up or data_com_delta_seconds == 0 ) and saved_raw_frame_counter < saved_raw_frames_number :
     if com_source :
         frame = data_com.read ( 4666 )
     else :
