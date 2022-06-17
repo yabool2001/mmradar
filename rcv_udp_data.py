@@ -19,9 +19,15 @@ from file_ops import write_data_2_local_file
 ######################## DEFINITIONS ###########################
 ################################################################
 
-src_udp_port                    = 10005
-src_udp_ip                     = '192.168.1.17'
-dest_udp_ip                     = '192.168.1.30'
+control                         = 506660481457717506
+frame                           = bytes(1)
+
+frame_header_struct = 'Q9I2H'
+frame_header_length = struct.calcsize ( frame_header_struct )
+
+src_udp_port        = 10005
+src_udp_ip          = '192.168.1.17'
+dest_udp_ip         = '192.168.1.30'
 
 hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
 
@@ -35,8 +41,17 @@ src_udp.bind ( ( dest_udp_ip , src_udp_port ) )
 
 ##################### READ DATA #################################
 while True :
-    data, address = src_udp.recvfrom ( 4096 )
-    print("\n\n 2. Server received: ", data.decode('utf-8'), "\n\n")
-
+    frame , address = src_udp.recvfrom ( 4666 )
+    #print("\n\n 2. Server received: ", data.decode('utf-8'), "\n\n")
+    try:
+        sync , version , total_packet_length , platform , frame_number , subframe_number , chirp_processing_margin , frame_processing_margin , track_process_time , uart_sent_time , num_tlvs , checksum = struct.unpack ( frame_header_struct , frame[:frame_header_length] )
+        #if frame_number == 8961 :
+        #    pass
+        if sync == control :
+            print ( sync )
+        else :
+            print ( sync )
+    except struct.error as e :
+        print ( e )
 ################# CLOSE DATA COM PORT FILE ######################
 src_udp.close ()
