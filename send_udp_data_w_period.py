@@ -27,10 +27,14 @@ period_send_delta_seconds       = 1
 control                         = 506660481457717506
 frame                           = bytes (1)
 
-#dest_udp_ip                     = '10.0.0.157' # Lipków
-#dest_udp_ip                     = '192.168.1.17' # Meander raspberrypi
-dest_udp_ip                     = '192.168.1.30' # Meander MW50-SV0
-dest_udp_port                   = 10005
+#dst_udp_ip                     = '10.0.0.157' # Lipków raspberry pi 3b+
+#dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+dst_udp_ip                      = '10.0.0.5' # Lipków GO3
+#dst_udp_ip                     = '192.168.1.17' # Meander raspberrypi
+#dst_udp_ip                     = '192.168.1.30' # Meander MW50-SV0
+#src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
+src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+dst_udp_port                   = 10005
 
 #saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
 saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
@@ -72,8 +76,8 @@ def setup_udp_timer () :
 ################################################################
 ################ SOCKET Configuration ##########################
 ################################################################
-dest_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-#dest_udp.sendto ( bytes ( 'Hello' , 'utf-8') , ( dest_udp_ip , dest_udp_port ) )
+dst_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+#dst_udp.sendto ( bytes ( 'Hello' , 'utf-8') , ( dst_udp_ip , dst_udp_port ) )
 
 ##################### READ DATA #################################
 if com_source :
@@ -103,7 +107,7 @@ while True :
                     frame = b''
                     break # porzucam ramkę, bo nie wiem o ile uciąć ramkę, żeby dobrać się do następnego TLV
                 if tlv_type == 7 or tlv_type == 11 :
-                    dest_udp.sendto ( frame[:tlv_length] , ( dest_udp_ip , dest_udp_port ) )
+                    dst_udp.sendto ( frame[:tlv_length] , ( dst_udp_ip , dst_udp_port ) )
                     tlv_type = None
                     tlv_length = None
                     break # porzucam ramkę, bo dostałem wszystko co chciałem z tej ramki
@@ -119,4 +123,4 @@ while True :
 ################# CLOSE DATA COM PORT FILE ######################
 if com_source :
     close_serial_ports ( conf_com , data_com )
-dest_udp.close ()
+dst_udp.close ()

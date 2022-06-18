@@ -1,35 +1,33 @@
 # Script to save binary data to file with minimum parsing
 
-import datetime
 from multiprocessing.dummy import Process
-import time
 import serial
 import serial.tools.list_ports
 import struct
-# sys.setdefaultencoding('utf-8')
 from mmradar_ops import mmradar_conf
 from serial_ops import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
 import socket
-from file_ops import write_data_2_local_file
-
 
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
 
-com_source                      = 1
-chirp_conf                      = 0
-data_com_delta_seconds          = 1
+chirp_conf                      = 2
 
 control                         = 506660481457717506
 frame                           = bytes (1)
 
-dest_udp_ip                     = '10.0.0.157' # Lipków
-#dest_udp_ip                     = '192.168.1.' # Meander
-dest_udp_port                   = 10005
+#dst_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
+#dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+dst_udp_ip                      = '10.0.0.5' # Lipków GO3
+#dst_udp_ip                      = '192.168.1.17' # Meander raspberrypi
+#dst_udp_ip                      = '192.168.1.30' # Meander MW50-SV0
+#src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
+src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+dst_udp_port                    = 10005
 
 #saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
-saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
+#saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
 
 mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
@@ -39,6 +37,11 @@ sync_header_struct = 'Q'
 sync_header_length = struct.calcsize ( sync_header_struct )
 
 hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
+
+################################################################
+################ SCRIPT START ##################################
+################################################################
+print ( hello )
 
 ################################################################
 ################ SERIALS COMM CONFiguration ####################
@@ -61,30 +64,20 @@ data_com.reset_input_buffer ()
 ################################################################
 ################ SOCKET Configuration ##########################
 ################################################################
-dest_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+dst_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
 
 ##################### READ DATA #################################
 data_com.reset_output_buffer ()
 data_com.reset_input_buffer ()
-saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
-saved_raw_frames_number = len ( saved_raw_frames )
-saved_raw_frame_counter = 0
-frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
-while ( datetime.datetime.utcnow () < frame_read_time_up or data_com_delta_seconds == 0 ) and saved_raw_frame_counter < saved_raw_frames_number :
-    if com_source :
-        frame = data_com.read ( 4666 )
-    else :
-        frame = eval ( saved_raw_frames[saved_raw_frame_counter] )
-        saved_raw_frame_counter += 1
+while True :
+    frame = data_com.read ( 4666 )
     try :
         sync = struct.unpack ( sync_header_struct , frame[:sync_header_length] )
         if sync[0] == control :
-            print ( 1 )
-            dest_udp.sendto ( frame , ( dest_udp_ip , dest_udp_port ) )
-        else :
-            print ( 0 )
+            dst_udp.sendto ( frame , ( dst_udp_ip , dst_udp_port ) )
     except struct.error as e :
-        pass
+        er = f'{e}'
+        dst_udp.sendto ( str.encode ( er ) , ( dst_udp_ip , dst_udp_port ) )
 
 ################# CLOSE DATA COM PORT FILE ######################
 close_serial_ports ( conf_com , data_com )
