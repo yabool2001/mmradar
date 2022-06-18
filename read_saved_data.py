@@ -29,9 +29,9 @@ import TargetList
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
-com_source                      = 0
-chirp_conf                      = 0
-data_com_delta_seconds          = 3
+data_source                     = 1
+chirp_conf                      = 2
+data_com_delta_seconds          = 30
 
 control                         = 506660481457717506
 raws                            = bytes(1)
@@ -44,8 +44,14 @@ mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 
-dest_udp_ip                     = '10.0.0.157'
-dest_udp_port                   = 10005
+#dst_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
+#dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+dst_udp_ip                      = '10.0.0.5' # Lipków GO3
+#dst_udp_ip                      = '192.168.1.17' # Meander raspberrypi
+#dst_udp_ip                      = '192.168.1.30' # Meander MW50-SV0
+#src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
+src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+dst_udp_port                    = 10005
 
 frames_list = []
 
@@ -60,7 +66,7 @@ hello = "\n\n##########################################\n############# mmradar s
 ################################################################
 ################ SERIALS COMM CONFiguration ####################
 ################################################################
-if com_source :
+if data_source == 0 : # COM Port
     conf_com = serial.Serial ()
     data_com = serial.Serial ()
     set_serials_cfg ( conf_com , data_com )
@@ -79,8 +85,9 @@ if com_source :
 ################################################################
 ################ SOCKET Configuration ##########################
 ################################################################
-udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-#udp.sendto ( bytes ( 'Hello' , 'utf-8') , ( dest_udp_ip , dest_udp_port ) )
+if data_source == 1 : # UDP Port
+    src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+    src_udp.bind ( ( dst_udp_ip , dst_udp_port ) )
 
 ################################################################
 ################ START PROGRAM #################################
@@ -94,9 +101,11 @@ saved_raw_frames_number = len ( saved_raw_frames )
 saved_raw_frame_counter = 0
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_counter < saved_raw_frames_number :
-    if com_source :
+    if data_source == 0 :
         frame = data_com.read ( 4666 )
-    else :
+    if data_source == 1 :
+        frame , address = src_udp.recvfrom ( 4666 )
+    if data_source == 2 :
         frame = eval ( saved_raw_frames[saved_raw_frame_counter] )
         saved_raw_frame_counter += 1
     frame_dict = { 'id' : time.time_ns() }
@@ -113,9 +122,9 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
         frame_dict.update ( { 'frame header error' : {e} } )
     sync = 0
     if not frame_dict.get ( 'frame header error' ) :
-        if com_source :
-            with open ( raw_data_bin_file_name , 'a' ) as f :
-                f.write ( f'{frame}\n' )
+        #if data_source == 0:
+        #    with open ( raw_data_bin_file_name , 'a' ) as f :
+        #        f.write ( f'{frame}\n' )
         frame = frame[frame_header_length:]
         tlv_type_list = []
         for i in range ( frame_dict.get ( 'num_tlvs' ) ) :
@@ -151,5 +160,8 @@ with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
 #pprint ( frames_list )
 frames_list.clear ()
 
-if com_source :
+if data_source == 0 :
     close_serial_ports ( conf_com , data_com )
+
+if data_source == 1 :
+    src_udp.close ()

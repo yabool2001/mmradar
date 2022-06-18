@@ -82,21 +82,16 @@ while True :
                 try:
                     tlv_type, tlv_length = struct.unpack ( tlv_header_struct , frame[:tlv_header_length] )
                 except struct.error as e :
-                    frame = b''
                     break # porzucam ramkę, bo nie wiem o ile uciąć ramkę, żeby dobrać się do następnego TLV
                 if tlv_type == 7 or tlv_type == 11 :
                     dst_udp.sendto ( frame[:tlv_length] , ( dst_udp_ip , dst_udp_port ) )
                     tlv_type = None
                     tlv_length = None
-                    break # porzucam ramkę, bo dostałem wszystko co chciałem z tej ramki
                 frame = frame[tlv_length:]
-        else :
-            sync = 0
-            frame = b''
-            continue
     except struct.error as e :
         pass
     frame = b''
+    sync = 0
 
 ################# CLOSE DATA COM PORT FILE ######################
 close_serial_ports ( conf_com , data_com )
