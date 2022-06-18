@@ -36,7 +36,7 @@ mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 sync_header_struct = 'Q'
 sync_header_length = struct.calcsize ( sync_header_struct )
 
-hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
+hello = "\n\n##########################################\n######### send_udp_frame started #########\n##########################################\n"
 
 ################################################################
 ################ SCRIPT START ##################################
@@ -76,9 +76,7 @@ while True :
         if sync[0] == control :
             dst_udp.sendto ( frame , ( dst_udp_ip , dst_udp_port ) )
     except struct.error as e :
-        er = f'{e}'
-        dst_udp.sendto ( str.encode ( er ) , ( dst_udp_ip , dst_udp_port ) )
-
+        pass
 ################# CLOSE DATA COM PORT FILE ######################
 close_serial_ports ( conf_com , data_com )
 dest_udp.close ()
