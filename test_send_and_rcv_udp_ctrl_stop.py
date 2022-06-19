@@ -30,9 +30,11 @@ mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
 mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 
+ctrl_struct = 'B'
+ctrl_length = struct.calcsize ( ctrl_struct )
 ctrl_exit = b'0'
 
-hello = "\n\n##########################################\n######### send_udp_frame started #########\n##########################################\n"
+hello = "\n\n##########################################\n######### send_and_receive started #######\n##########################################\n"
 
 ################################################################
 ################ SCRIPT START ##################################
@@ -49,6 +51,12 @@ udp.bind ( ( src_udp_ip , data_udp_port ) )
 while True :
     udp.sendto ( ctrl_exit , ( dst_udp_ip , ctrl_udp_port ) )
     frame , address = udp.recvfrom ( 4666 )
-    if 
+    try :
+        ctrl = struct.unpack ( ctrl_struct , frame[:ctrl_length] )
+        if ctrl[0] == ctrl_exit :
+            print ("Ctrl exit received!")
+            break
+    except struct.error as e :
+        pass
 ################# CLOSE DATA COM PORT FILE #####################
 udp.close ()

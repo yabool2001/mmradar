@@ -1,6 +1,5 @@
 # Script to save binary data to file with minimum parsing
 
-from multiprocessing.dummy import Process
 import serial
 import serial.tools.list_ports
 import struct
@@ -70,8 +69,6 @@ data_com.reset_input_buffer ()
 ################ SOCKET Configuration ##########################
 ################################################################
 udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-#src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-#udp.bind ( ( src_udp_ip , ctrl_udp_port ) )
 
 ##################### READ DATA #################################
 data_com.reset_output_buffer ()
@@ -84,14 +81,6 @@ while True :
             udp.sendto ( frame , ( dst_udp_ip , data_udp_port ) )
     except struct.error as e :
         pass
-    #frame , address = udp.recvfrom ( 4666 )
-    #try :
-    #    ctrl = struct.unpack ( ctrl_header_struct , frame[:ctrl_header_length] )
-    #    if ctrl[0] == ctrl_exit :
-    #        break
-    #except struct.error as e :
-    #    pass
 ################# CLOSE DATA COM PORT FILE ######################
 close_serial_ports ( conf_com , data_com )
 udp.close ()
-#dst_udp.close ()
