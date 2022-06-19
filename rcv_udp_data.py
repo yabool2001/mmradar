@@ -27,12 +27,14 @@ frame_header_length = struct.calcsize ( frame_header_struct )
 
 #dst_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
 #dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
-dst_udp_ip                      = '10.0.0.5' # Lipków GO3
+#dst_udp_ip                      = '10.0.0.5' # Lipków GO3
 #dst_udp_ip                      = '192.168.1.17' # Meander raspberrypi
 #dst_udp_ip                      = '192.168.1.30' # Meander MW50-SV0
+src_udp_ip                      = '10.0.0.5' # Lipków GO3
 #src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
-src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
-dst_udp_port                    = 10005
+#src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+ctrl_udp_port                   = 10004
+data_udp_port                   = 10005
 
 hello = "\n\n##########################################\n############# mmradar started ############\n##########################################\n"
 
@@ -42,7 +44,7 @@ hello = "\n\n##########################################\n############# mmradar s
 #src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
 #dest_udp.sendto ( bytes ( 'Hello' , 'utf-8') , ( dest_udp_ip , dest_udp_port ) )
 src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-src_udp.bind ( ( dst_udp_ip , dst_udp_port ) )
+src_udp.bind ( ( src_udp_ip , data_udp_port ) )
 
 ##################### READ DATA #################################
 while True :

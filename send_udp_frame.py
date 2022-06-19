@@ -24,7 +24,8 @@ dst_udp_ip                      = '10.0.0.5' # Lipków GO3
 #dst_udp_ip                      = '192.168.1.30' # Meander MW50-SV0
 #src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
 src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
-dst_udp_port                    = 10005
+ctrl_udp_port                    = 10004
+data_udp_port                    = 10005
 
 #saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
 #saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
@@ -35,6 +36,10 @@ mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 
 sync_header_struct = 'Q'
 sync_header_length = struct.calcsize ( sync_header_struct )
+
+ctrl_header_struct = 'B'
+ctrl_header_length = struct.calcsize ( sync_header_struct )
+ctrl_exit = 0
 
 hello = "\n\n##########################################\n######### send_udp_frame started #########\n##########################################\n"
 
@@ -65,6 +70,8 @@ data_com.reset_input_buffer ()
 ################ SOCKET Configuration ##########################
 ################################################################
 dst_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+src_udp.bind ( ( src_udp_ip , ctrl_udp_port ) )
 
 ##################### READ DATA #################################
 data_com.reset_output_buffer ()
@@ -74,9 +81,17 @@ while True :
     try :
         sync = struct.unpack ( sync_header_struct , frame[:sync_header_length] )
         if sync[0] == control :
-            dst_udp.sendto ( frame , ( dst_udp_ip , dst_udp_port ) )
+            dst_udp.sendto ( frame , ( dst_udp_ip , data_udp_port ) )
+    except struct.error as e :
+        pass
+    frame , address = src_udp.recvfrom ( 4666 )
+    try :
+        ctrl = struct.unpack ( ctrl_header_struct , frame[:ctrl_header_length] )
+        if ctrl[0] == ctrl_exit :
+            break
     except struct.error as e :
         pass
 ################# CLOSE DATA COM PORT FILE ######################
 close_serial_ports ( conf_com , data_com )
-dest_udp.close ()
+src_udp.close ()
+dst_udp.close ()
