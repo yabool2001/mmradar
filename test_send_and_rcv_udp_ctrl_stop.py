@@ -46,7 +46,9 @@ print ( hello )
 udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
 udp.bind ( ( src_udp_ip , data_udp_port ) )
 ################ MAIN ##########################################
-udp.sendto ( ctrl_exit , ( dst_udp_ip , ctrl_udp_port ) )
-frame , address = udp.recvfrom ( 4666 )
+while True :
+    udp.sendto ( ctrl_exit , ( dst_udp_ip , ctrl_udp_port ) )
+    frame , address = udp.recvfrom ( 4666 )
+    if 
 ################# CLOSE DATA COM PORT FILE #####################
 udp.close ()

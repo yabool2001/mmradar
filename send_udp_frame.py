@@ -69,9 +69,9 @@ data_com.reset_input_buffer ()
 ################################################################
 ################ SOCKET Configuration ##########################
 ################################################################
-dst_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-src_udp.bind ( ( src_udp_ip , ctrl_udp_port ) )
+udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+#src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
+#udp.bind ( ( src_udp_ip , ctrl_udp_port ) )
 
 ##################### READ DATA #################################
 data_com.reset_output_buffer ()
@@ -81,17 +81,17 @@ while True :
     try :
         sync = struct.unpack ( sync_header_struct , frame[:sync_header_length] )
         if sync[0] == control :
-            dst_udp.sendto ( frame , ( dst_udp_ip , data_udp_port ) )
+            udp.sendto ( frame , ( dst_udp_ip , data_udp_port ) )
     except struct.error as e :
         pass
-    frame , address = src_udp.recvfrom ( 4666 )
-    try :
-        ctrl = struct.unpack ( ctrl_header_struct , frame[:ctrl_header_length] )
-        if ctrl[0] == ctrl_exit :
-            break
-    except struct.error as e :
-        pass
+    #frame , address = udp.recvfrom ( 4666 )
+    #try :
+    #    ctrl = struct.unpack ( ctrl_header_struct , frame[:ctrl_header_length] )
+    #    if ctrl[0] == ctrl_exit :
+    #        break
+    #except struct.error as e :
+    #    pass
 ################# CLOSE DATA COM PORT FILE ######################
 close_serial_ports ( conf_com , data_com )
-src_udp.close ()
-dst_udp.close ()
+udp.close ()
+#dst_udp.close ()
