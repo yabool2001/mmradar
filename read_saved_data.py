@@ -31,7 +31,7 @@ import TargetList
 ################################################################
 data_source                     = 1
 chirp_conf                      = 2
-data_com_delta_seconds          = 30
+data_com_delta_seconds          = 300
 
 control                         = 506660481457717506
 raws                            = bytes(1)

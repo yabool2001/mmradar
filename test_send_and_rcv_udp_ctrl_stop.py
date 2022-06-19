@@ -1,12 +1,8 @@
 # Script to save binary data to file with minimum parsing
 
-from multiprocessing.dummy import Process
-import serial
-import serial.tools.list_ports
 import struct
-from mmradar_ops import mmradar_conf
-from serial_ops import open_serial_ports, set_serials_cfg , close_serial_ports , open_serial_ports
 import socket
+import time
 
 ################################################################
 ######################## DEFINITIONS ###########################
@@ -26,10 +22,6 @@ data_udp_port                    = 10005
 #saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
 #saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
 
-mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
-mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
-mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
-
 ctrl_struct = 'B'
 ctrl_length = struct.calcsize ( ctrl_struct )
 ctrl_exit = b'0'
@@ -46,17 +38,23 @@ print ( hello )
 ################################################################
 #dst_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
 udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-udp.bind ( ( src_udp_ip , data_udp_port ) )
+udp.bind ( ( src_udp_ip , ctrl_udp_port ) )
 ################ MAIN ##########################################
 while True :
     udp.sendto ( ctrl_exit , ( dst_udp_ip , ctrl_udp_port ) )
-    frame , address = udp.recvfrom ( 4666 )
     try :
-        ctrl = struct.unpack ( ctrl_struct , frame[:ctrl_length] )
-        if ctrl[0] == ctrl_exit :
-            print ("Ctrl exit received!")
-            break
+        ctrl , address = udp.recvfrom ( 4666 )
+        try :
+            ctrl = struct.unpack ( ctrl_struct , ctrl[:ctrl_length] )
+            print ( int.from_bytes ( ctrl , byteorder='big' ) )
+            print ( ctrl[0] )
+            if ctrl[0] == int.from_bytes ( ctrl_exit , byteorder='big' ) :
+                print ("Ctrl exit received!")
+                break
+        except socket.error as e :
+            pass
     except struct.error as e :
         pass
+    time.sleep ( 1 )
 ################# CLOSE DATA COM PORT FILE #####################
 udp.close ()
