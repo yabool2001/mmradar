@@ -7,10 +7,11 @@
 
 import datetime
 #import multiprocessing
+import matplotlib.pyplot as plt
 from multiprocessing.dummy import Process
 from pprint import pprint
 import time
-from numpy import append
+#from numpy import append
 import serial
 import serial.tools.list_ports
 import socket
@@ -94,6 +95,12 @@ if data_source == 1 : # UDP Port
 ################################################################
 print ( hello )
 
+################################################################
+################ MATPLOTLIB SETUP ##############################
+################################################################
+ax = plt.axes ( projection = "3d" )
+
+
 ################ OPEN FILE WITH SAVED RAW DATA #################
 if data_source == 2 : # File
     saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
@@ -142,9 +149,21 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                     point_cloud = PointCloud.PointCloud ( tlv_length - tlv_header_length , frame[tlv_header_length:][:(tlv_length - tlv_header_length )] )
                     frame_dict.update ( point_cloud_unit = point_cloud.get_point_unit_dict () )
                     frame_dict.update ( points = point_cloud.get_points_list () )
+                    # matplotlib test
+                    pcu = point_cloud.get_point_unit_dict ()
+                    pp = point_cloud.get_points_list ()
+                    for p in pp :
+                        ax.scatter ( p['azimuth']*pcu['azimuth_unit'] , p['range']*pcu['range_unit'] , p['elevation']*pcu['elevation_unit'] )
+                        plt.show ()
+                        time.sleep (0.1)
                 case 7 :
                     target_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_list = target_list.get_target_list () )
+                    #tl = target_list.get_target_list ()
+                    #for t in tl :
+                    #    ax.scatter ( t['pos_x'] , t['pos_y'] , t['pos_z'] )
+                    #    plt.show ()
+                    #    time.sleep (0.1)
                 case 8 :
                     target_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_index_list = target_index_list.get_target_index_list () )
@@ -156,6 +175,12 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
             tlv_length = None
         frame_dict.update ( tlv_type_list = tlv_type_list )
         tlv_type_list = None
+        ### matplotlib action:
+        #if target_list :
+        #for tl in target_list :
+        #    print ( tl['pos_x'] )
+        #ax.scatter ( target_list['pos_x'] , target_list['pos_y'] , target_list['pos_z'] , marker = 'v' , alpha = 0.1 )
+        #plt.show ()
     frames_list.append ( frame_dict )
     del ( frame_dict )
 with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
