@@ -29,8 +29,8 @@ import TargetList
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
-data_source                     = 1
-chirp_conf                      = 2
+data_source                     = 2 # 0: COM Port, 1: UDP Port, 2: File 
+chirp_conf                      = 2 # 0: Do nothing, 1: Start radar, 2: Stop, Config and Start radar
 data_com_delta_seconds          = 300
 
 control                         = 506660481457717506
@@ -92,13 +92,16 @@ if data_source == 1 : # UDP Port
 ################################################################
 ################ START PROGRAM #################################
 ################################################################
-
 print ( hello )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
-saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
-saved_raw_frames_number = len ( saved_raw_frames )
-saved_raw_frame_counter = 0
+if data_source == 2 : # File
+    saved_raw_frames = open ( saved_raw_data_file_name , 'r' ) .readlines ()
+    saved_raw_frames_number = len ( saved_raw_frames )
+    saved_raw_frame_counter = 0
+else :
+    saved_raw_frame_counter = 1
+    saved_raw_frames_number = 2
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_counter < saved_raw_frames_number :
     if data_source == 0 :
