@@ -98,8 +98,9 @@ print ( hello )
 ################################################################
 ################ MATPLOTLIB SETUP ##############################
 ################################################################
-ax = plt.axes ( projection = "3d" )
-
+plt.ion ()
+fig = plt.figure ()
+ax = fig.add_subplot ( 111 )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
 if data_source == 2 : # File
@@ -150,18 +151,28 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                     frame_dict.update ( point_cloud_unit = point_cloud.get_point_unit_dict () )
                     frame_dict.update ( points = point_cloud.get_points_list () )
                     # matplotlib test 
-                    pcu = point_cloud.get_point_unit_dict ()
-                    pp = point_cloud.get_points_list ()
-                    for p in pp :
-                        ax.scatter ( p['azimuth']*pcu['azimuth_unit'] , p['range']*pcu['range_unit'] , p['elevation']*pcu['elevation_unit'] )
-                        plt.show ()
-                        time.sleep (0.1)
+                    #pcu = point_cloud.get_point_unit_dict ()
+                    #pp = point_cloud.get_points_list ()
+                    #for p in pp :
+                        #ax.scatter ( p['azimuth']*pcu['azimuth_unit'] , p['range']*pcu['range_unit'] , p['elevation']*pcu['elevation_unit'] )
+                        #plt.scatter ( int ( p['azimuth'] ) * int ( pcu['azimuth_unit'] ) , int ( p['range'] ) * int ( pcu['range_unit'] ) )
+                        #time.sleep (0.1)
                 case 7 :
                     target_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_list = target_list.get_target_list () )
+                    # if frame_dict.get ( ['target_list'] ) :
+                    #    x = frame_dict['target_list'][0]
+                    #if frame_dict.get ( ['target_list'][0]['pos_x'] ) :
+                    #    x = frame_dict['target_list'][0]['pos_x']
+                    # plt.scatter ( frame_dict['target_list'][0]['pos_x'] , frame_dict['target_list'][0]['pos_y'] )
+                    #plt.show ()
+                    # plt.draw ()
                     #tl = target_list.get_target_list ()
-                    #for t in tl :
-                    #    ax.scatter ( t['pos_x'] , t['pos_y'] , t['pos_z'] )
+                    for t in target_list.targets_list :
+                        if not t.get ( 'error' ) :
+                            ax.scatter ( t['pos_x'] , t['pos_y']  )
+                            fig.canvas.draw ()
+                            #ax.plot ( t['pos_x'] , t['pos_y'] , t['pos_z'] )
                     #    plt.show ()
                     #    time.sleep (0.1)
                 case 8 :
