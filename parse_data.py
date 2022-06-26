@@ -31,9 +31,9 @@ import TargetList
 ################################################################
 ######################## DEFINITIONS ###########################
 ################################################################
-data_source                     = 2 # 0: COM Port, 1: UDP Port, 2: File 
+data_source                     = 1 # 0: COM Port, 1: UDP Port, 2: File 
 chirp_conf                      = 2 # 0: Do nothing, 1: Start radar, 2: Stop, Config and Start radar
-data_com_delta_seconds          = 300
+data_com_delta_seconds          = 3600
 
 control                         = 506660481457717506
 raws                            = bytes(1)
@@ -48,12 +48,15 @@ mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 
 #dst_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
 #dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
-dst_udp_ip                      = '10.0.0.5' # Lipków GO3
-#dst_udp_ip                      = '192.168.1.17' # Meander raspberrypi
+#dst_udp_ip                      = '10.0.0.5' # Lipków GO3
+dst_udp_ip                      = '192.168.1.14' # Meander raspberrypi 3b
+#dst_udp_ip                      = '192.168.1.17' # Meander raspberrypi 02w
 #dst_udp_ip                      = '192.168.1.30' # Meander MW50-SV0
-#src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
-src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
-dst_udp_port                    = 10005
+src_udp_ip                      = '10.0.0.5' # Lipków GO3
+#src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b
+#src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+ctrl_udp_port                   = 10004
+data_udp_port                   = 10005
 
 frames_list = []
 
@@ -89,7 +92,7 @@ if data_source == 0 : # COM Port
 ################################################################
 if data_source == 1 : # UDP Port
     src_udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
-    src_udp.bind ( ( dst_udp_ip , dst_udp_port ) )
+    src_udp.bind ( ( src_udp_ip , data_udp_port ) )
 
 ################################################################
 ################ START PROGRAM #################################
@@ -100,10 +103,12 @@ print ( hello )
 ################ MATPLOTLIB SETUP ##############################
 ################################################################
 plt.ion ()
-x_list = [-10,10]
-y_list = [-10,10]
+x_list = [-3,3]
+y_list = [-1,10]
 aplot = plt.plot ( x_list , y_list , 'ro' )[0]
 plt.draw ()
+x_list = []
+y_list = []
 #plt.style.use ( 'seaborn' )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
@@ -116,6 +121,7 @@ else :
     saved_raw_frames_number = 2
 frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds = data_com_delta_seconds )
 while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_counter < saved_raw_frames_number :
+    #time.sleep (1)
     if data_source == 0 :
         frame = data_com.read ( 4666 )
     if data_source == 1 :
@@ -154,38 +160,38 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                     point_cloud = PointCloud.PointCloud ( tlv_length - tlv_header_length , frame[tlv_header_length:][:(tlv_length - tlv_header_length )] )
                     frame_dict.update ( point_cloud_unit = point_cloud.get_point_unit_dict () )
                     frame_dict.update ( points = point_cloud.get_points_list () )
-                    # matplotlib test 
-                    #pcu = point_cloud.get_point_unit_dict ()
-                    #pp = point_cloud.get_points_list ()
-                    #for p in pp :
-                        #ax.scatter ( p['azimuth']*pcu['azimuth_unit'] , p['range']*pcu['range_unit'] , p['elevation']*pcu['elevation_unit'] )
-                        #plt.scatter ( int ( p['azimuth'] ) * int ( pcu['azimuth_unit'] ) , int ( p['range'] ) * int ( pcu['range_unit'] ) )
+                    if not point_cloud.point_unit_dict.get ( 'error' ) :
+                        ### matplotlib
+                        print ( f'{frame_number}, tlv_type: {tlv_type}, len: {len ( point_cloud.points_list)}' )
+                        for p in point_cloud.points_list :
+                            if not p.get ( 'error' ) :
+                                x_list.append ( round ( p['azimuth'] * point_cloud.point_unit_dict['azimuth_unit'] , 2 ) )
+                                y_list.append ( round ( p['range'] * point_cloud.point_unit_dict['range_unit'] , 2 ) )
+                        aplot.set_xdata ( x_list )
+                        aplot.set_ydata ( y_list )
+                        #plt.draw ()
+                        plt.pause (0.1)
                         #time.sleep (0.1)
+                        x_list = []
+                        y_list = []
+                        ### matplotlib
                 case 7 :
                     target_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_list = target_list.get_target_list () )
-                    # if frame_dict.get ( ['target_list'] ) :
-                    #    x = frame_dict['target_list'][0]
-                    #if frame_dict.get ( ['target_list'][0]['pos_x'] ) :
-                    #    x = frame_dict['target_list'][0]['pos_x']
-                    # plt.scatter ( frame_dict['target_list'][0]['pos_x'] , frame_dict['target_list'][0]['pos_y'] )
-                    #plt.show ()
-                    # plt.draw ()
-                    #tl = target_list.get_target_list ()
-                    for t in target_list.targets_list :
-                        if not t.get ( 'error' ) :
-                            x_list.append ( round ( t['pos_x'] , 2 ) )
-                            y_list.append ( round ( t['pos_y'] , 2 ) )
-                    aplot.set_xdata ( x_list )
-                    aplot.set_ydata ( y_list )
+                    ### matplotlib
+                    print ( f'{frame_number}, tlv_type: {tlv_type}, len: {len ( target_list.targets_list)}' )
+                    #for t in target_list.targets_list :
+                    #    if not t.get ( 'error' ) :
+                    #        x_list.append ( round ( t['pos_x'] , 2 ) )
+                    #        y_list.append ( round ( t['pos_y'] , 2 ) )
+                    #aplot.set_xdata ( x_list )
+                    #aplot.set_ydata ( y_list )
                     #plt.draw ()
-                    plt.pause (0.1)
+                    #plt.pause (0.1)
                     #time.sleep (0.1)
-                    x_list = []
-                    y_list = []
-                            #ax.plot ( t['pos_x'] , t['pos_y'] , t['pos_z'] )
-                    #    plt.show ()
-                    #    time.sleep (0.1)
+                    #x_list = []
+                    #y_list = []
+                    #### matplotlib
                 case 8 :
                     target_index_list = TargetIndex.TargetIndex ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_index_list = target_index_list.get_target_index_list () )
@@ -203,10 +209,10 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
         #    print ( tl['pos_x'] )
         #ax.scatter ( target_list['pos_x'] , target_list['pos_y'] , target_list['pos_z'] , marker = 'v' , alpha = 0.1 )
         #plt.show ()
-    frames_list.append ( frame_dict )
-    del ( frame_dict )
-with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
-    f.write ( f'{frames_list}' + '\n\r' )
+    #frames_list.append ( frame_dict )
+    #del ( frame_dict )
+#with open ( parsed_data_file_name , 'a' , encoding='utf-8' ) as f :
+    #f.write ( f'{frames_list}' + '\n\r' )
 #pprint ( frames_list )
 frames_list.clear ()
 

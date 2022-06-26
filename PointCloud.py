@@ -32,5 +32,6 @@ class PointCloud :
                 point_dict = { 'elevation' : elevation , 'azimuth' : azimuth , 'doppler' : doppler , 'range' : range_range , 'snr' : snr }
                 self.points_list.append ( point_dict )
             except struct.error as e :
-                self.points_list.append ( f'error: {e}' )
+                #self.points_list.append ( f'error: {e}' )
+                self.points_list.append ( {'error' : e } )
         return self.points_list
