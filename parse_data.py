@@ -6,6 +6,7 @@
 # To decode messages on linux machine use command: sudo tcpdump -vv -A udp dst port 10005
 
 import datetime
+from matplotlib import projections
 #import multiprocessing
 import matplotlib.pyplot as plt
 from multiprocessing.dummy import Process
@@ -99,8 +100,11 @@ print ( hello )
 ################ MATPLOTLIB SETUP ##############################
 ################################################################
 plt.ion ()
-fig = plt.figure ()
-ax = fig.add_subplot ( 111 )
+x_list = [-10,10]
+y_list = [-10,10]
+aplot = plt.plot ( x_list , y_list , 'ro' )[0]
+plt.draw ()
+#plt.style.use ( 'seaborn' )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
 if data_source == 2 : # File
@@ -170,8 +174,15 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                     #tl = target_list.get_target_list ()
                     for t in target_list.targets_list :
                         if not t.get ( 'error' ) :
-                            ax.scatter ( t['pos_x'] , t['pos_y']  )
-                            fig.canvas.draw ()
+                            x_list.append ( round ( t['pos_x'] , 2 ) )
+                            y_list.append ( round ( t['pos_y'] , 2 ) )
+                    aplot.set_xdata ( x_list )
+                    aplot.set_ydata ( y_list )
+                    #plt.draw ()
+                    plt.pause (0.1)
+                    #time.sleep (0.1)
+                    x_list = []
+                    y_list = []
                             #ax.plot ( t['pos_x'] , t['pos_y'] , t['pos_z'] )
                     #    plt.show ()
                     #    time.sleep (0.1)
