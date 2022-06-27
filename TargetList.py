@@ -31,6 +31,7 @@ class TargetList :
                 target = { 'target_id' : target_id , 'pos_x' : pos_x , 'pos_y' : pos_y , 'pos_z' : pos_z , 'vel_x' : vel_x , 'vel_y' : vel_y , 'vel_z' : vel_z , 'acc_x' : acc_x , 'acc_y' : acc_y , 'acc_z' :acc_z }
                 self.targets_list.append ( target )
             except struct.error as e :
-                self.targets_list.append ( f"error: {e}" )
+                #self.targets_list.append ( f"error: {e}" )
+                self.targets_list.append ( {'error' : e } )
                 break
         return self.targets_list

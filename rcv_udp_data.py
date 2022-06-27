@@ -1,5 +1,5 @@
 # Script with minimum parsing to send binary data to UDP with period 
-# sudo tcpdump -vv -A udp dst port 10005
+# Test in linux system: sudo tcpdump -vv -A udp dst port 10005
 
 
 import datetime
