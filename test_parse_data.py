@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from multiprocessing.dummy import Process
 from pprint import pprint
 import time
+from numpy import block
 #from numpy import append
 import serial
 import serial.tools.list_ports
@@ -107,11 +108,19 @@ print ( hello )
 #y_list = [-1,10]
 #aplot = plt.plot ( x_list , y_list , 'ro' )[0]
 #plt.draw ()
-#x_list = []
-#y_list = []
+x_list = [1]
+y_list = [1]
 #plt.style.use ( 'seaborn' )
 fig , ax = plt.subplots ()
 plt.axis ( [ -3 , 3 , -1 , 10] )
+# (ln,) = ax.plot ( [1,2,3], [2,3,4], animated=True) # w tej wersji niema błędu
+ln = ax.plot ( x_list , y_list , 'ro', animated = True )[0]
+#plt.show ( block = False )
+plt.draw ( )
+plt.pause ( 0.1 )
+bg = fig.canvas.copy_from_bbox ( fig.bbox )
+ax.draw_artist ( ln )
+fig.canvas.blit ( fig.bbox )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
 if data_source == 2 : # File
@@ -167,8 +176,17 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                         #print ( f'{frame_number}, tlv_type: {tlv_type}, len: {len ( point_cloud.points_list)}' )
                         for p in point_cloud.points_list :
                             if not p.get ( 'error' ) :
-                                ax.scatter ( round ( p['azimuth'] * point_cloud.point_unit_dict['azimuth_unit'] , 2 ) , round ( p['range'] * point_cloud.point_unit_dict['range_unit'] , 2 ) )
-                                plt.show ()
+                                fig.canvas.restore_region ( bg )
+                                x_list.append ( round ( p['azimuth'] * point_cloud.point_unit_dict['azimuth_unit'] , 2 ) )
+                                y_list.append ( round ( p['range'] * point_cloud.point_unit_dict['range_unit'] , 2 ) )
+                                ln.set_xdata ( x_list )
+                                ln.set_ydata ( y_list )
+                                ax.draw_artist ( ln )
+                                fig.canvas.blit ( fig.bbox )
+                                fig.canvas.flush_events ()
+                                #plt.pause ( 0.1 )
+                                x_list = []
+                                y_list = []
                 case 7 :
                     target_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_list = target_list.get_target_list () )
