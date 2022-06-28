@@ -102,13 +102,16 @@ print ( hello )
 ################################################################
 ################ MATPLOTLIB SETUP ##############################
 ################################################################
-plt.ion ()
-plt.axis ( [ -3 , 3 , -1 , 10] )
-x_list = []
-y_list = []
-aplot = plt.plot ( x_list , y_list , 'ro' )[0]
-plt.draw ()
+#plt.ion ()
+#x_list = [-3,3]
+#y_list = [-1,10]
+#aplot = plt.plot ( x_list , y_list , 'ro' )[0]
+#plt.draw ()
+#x_list = []
+#y_list = []
 #plt.style.use ( 'seaborn' )
+fig , ax = plt.subplots ()
+plt.axis ( [ -3 , 3 , -1 , 10] )
 
 ################ OPEN FILE WITH SAVED RAW DATA #################
 if data_source == 2 : # File
@@ -164,16 +167,8 @@ while datetime.datetime.utcnow () < frame_read_time_up and saved_raw_frame_count
                         #print ( f'{frame_number}, tlv_type: {tlv_type}, len: {len ( point_cloud.points_list)}' )
                         for p in point_cloud.points_list :
                             if not p.get ( 'error' ) :
-                                x_list.append ( round ( p['azimuth'] * point_cloud.point_unit_dict['azimuth_unit'] , 2 ) )
-                                y_list.append ( round ( p['range'] * point_cloud.point_unit_dict['range_unit'] , 2 ) )
-                        aplot.set_xdata ( x_list )
-                        aplot.set_ydata ( y_list )
-                        #plt.draw ()
-                        plt.pause (0.1)
-                        #time.sleep (0.1)
-                        x_list = []
-                        y_list = []
-                        ### matplotlib
+                                ax.scatter ( round ( p['azimuth'] * point_cloud.point_unit_dict['azimuth_unit'] , 2 ) , round ( p['range'] * point_cloud.point_unit_dict['range_unit'] , 2 ) )
+                                plt.show ()
                 case 7 :
                     target_list = TargetList.TargetList ( tlv_length - tlv_header_length , frame[tlv_header_length:][:( tlv_length - tlv_header_length )] )
                     frame_dict.update ( target_list = target_list.get_target_list () )
