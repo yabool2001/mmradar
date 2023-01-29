@@ -48,8 +48,8 @@ mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 
 #dst_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
 #dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
-dst_udp_ip                      = '10.0.0.5' # Lipków MW50-SV0
-#dst_udp_ip                      = '10.0.0.2' # Lipków GO3
+dst_udp_ip                      = '10.0.0.2' # Lipków MW50-SV0
+#dst_udp_ip                      = '10.0.0.5' # Lipków GO3
 # dst_udp_ip                      = '192.168.1.14' # Meander raspberrypi 3b
 #dst_udp_ip                      = '192.168.1.17' # Meander raspberrypi 02w
 #dst_udp_ip                      = '192.168.1.30' # Meander MW50-SV0
