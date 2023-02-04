@@ -16,13 +16,13 @@ from file_ops import write_data_2_local_file
 ######################## DEFINITIONS ###########################
 ################################################################
 
-chirp_conf                      = 0
+chirp_conf                      = 2
 
 control                         = 506660481457717506
 data_com_delta_seconds          = 60
 raw_data                        = bytes (1)
 raw_data_bin_file_name          = f'save_bin_data/mmradar_gen_{time.time_ns()}.bin_raw_data'
-mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
+mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_staticRetention.cfg'
 mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
 mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
 
@@ -57,9 +57,9 @@ frame_read_time_up = datetime.datetime.utcnow () + datetime.timedelta ( seconds 
 while datetime.datetime.utcnow () < frame_read_time_up :
     raw_data = data_com.read ( 4666 )
     try:
-        sync = struct.unpack ( sync_header_struct , raw_data[:sync_header_length] )
-        if sync[0] == control :
-            f.write ( f'{raw_data}\n' )
+        #sync = struct.unpack ( sync_header_struct , raw_data[:sync_header_length] )
+        #if sync[0] == control :
+        f.write ( f'{raw_data}\n' )
     except struct.error as e :
         pass
 
