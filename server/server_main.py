@@ -1,5 +1,9 @@
 # Script to save binary data to file with minimum parsing
 
+# import sys jest tylko dla tego żeby ładować swoje moduły z innych katalogów
+import sys
+sys.path.append ('/Users/mzeml/python/mmradar/modules/')
+
 import serial
 import serial.tools.list_ports
 import struct
@@ -14,25 +18,28 @@ import socket
 chirp_conf                      = 2
 
 control                         = 506660481457717506
-frame                           = bytes (1)
+magicWord                       = bytearray ( b'\x02\x01\x04\x03\x06\x05\x08\x07' )
+frame                           = bytes ( 1 )
 
 #dst_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
-#dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
-dst_udp_ip                      = '10.0.0.5' # Lipków GO3
+dst_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+#dst_udp_ip                      = '10.0.0.103' # Lipków GO3
 #dst_udp_ip                      = '192.168.1.17' # Meander raspberrypi
 #dst_udp_ip                      = '192.168.1.30' # Meander MW50-SV0
+#dst_udp_ip                      = '10.0.0.102' # Lipków MW50-SV0
 #src_udp_ip                      = '10.0.0.157' # Lipków raspberry pi 3b+
-src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+#src_udp_ip                      = '10.0.0.159' # Lipków raspberry pi 02w
+src_udp_ip                      = '10.0.0.102' # Lipków MW50-SV0
 ctrl_udp_port                    = 10004
 data_udp_port                    = 10005
 
 #saved_raw_data_file_name       = 'save_bin_data/mmradar_gen_1655368399032378700.bin_raw_data
 #saved_raw_data_file_name        = 'mmradar_gen-20220612_2.bin_raw_data'
 
-mmradar_cfg_file_name           = 'chirp_cfg/AOP_6m_staticRetention.cfg'
+mmradar_cfg_file_name           = '/../chirp_cfg/AOP_6m_staticRetention.cfg'
 #mmradar_cfg_file_name           = 'chirp_cfg/ISK_6m_default-mmwvt-v14.11.0.cfg'
-mmradar_stop_cfg_file_name      = 'chirp_cfg/sensor_stop.cfg'
-mmradar_start_cfg_file_name     = 'chirp_cfg/sensor_start.cfg'
+mmradar_stop_cfg_file_name      = '/../chirp_cfg/sensor_stop.cfg'
+mmradar_start_cfg_file_name     = '/../chirp_cfg/sensor_start.cfg'
 
 sync_header_struct = 'Q'
 sync_header_length = struct.calcsize ( sync_header_struct )
@@ -71,7 +78,8 @@ udp = socket.socket ( socket.AF_INET , socket.SOCK_DGRAM , socket.IPPROTO_UDP )
 data_com.reset_output_buffer ()
 data_com.reset_input_buffer ()
 while True :
-    frame = data_com.read ( 4666 )
+    frame = data_com.read ( 1 )
+    i = 0
     try :
         sync = struct.unpack ( sync_header_struct , frame[:sync_header_length] )
         if sync[0] == control :
